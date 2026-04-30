@@ -1,0 +1,113 @@
+@use "../abstracts/variables" as *;
+
+@mixin btn($bgColor) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: $bgColor;
+  color: white;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:active {
+    opacity: 0.8;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+button[type="btn"] {
+  @include btn($primary);
+}
+
+@mixin text-btn(
+  $textColor,
+  $bgColor,
+  $hoverOpacity: 0.35,
+  $activeOpacity: 0.5
+) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background-color: transparent;
+  color: $textColor;
+  font-weight: 400;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: rgba($bgColor, $hoverOpacity);
+    color: white;
+  }
+
+  &:active {
+    background-color: rgba($bgColor, $activeOpacity);
+    color: white;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+button[type="text-btn"] {
+  @include text-btn($primary-text, $primary);
+}
+
+@mixin outlined-btn(
+  $color,
+  $textColor: $color,
+  $bgColor: null,
+  $hoverOpacity: 0.35,
+  $activeOpacity: 0.5
+) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid $color;
+  @if $bgColor == null {
+    background-color: transparent;
+  } @else {
+    background-color: $bgColor;
+  }
+  color: $textColor;
+  font-weight: 400;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: rgba($color, $hoverOpacity);
+    color: white;
+  }
+
+  &:active {
+    background-color: rgba($color, $activeOpacity);
+    color: white;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+button[type="outlined-btn"] {
+  @include outlined-btn($primary);
+}

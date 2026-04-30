@@ -1,0 +1,121 @@
+@use "../abstracts/theme-variables" as *;
+
+.browse-doctors-page-content {
+  padding: 2rem 3rem;
+
+  .header {
+    margin-bottom: 2rem;
+
+    .title {
+      color: rgb(var(--primary-text));
+      font-size: 1.875rem;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: $secondary-text;
+      margin-bottom: 1rem;
+    }
+
+    .search-bar {
+      padding: 0.5rem 1rem;
+      border-radius: 0.85rem;
+      font-weight: 500;
+
+      &:hover {
+        border-color: $border-hover;
+      }
+
+      &:focus {
+        border-color: $border-hover;
+      }
+
+      &::placeholder {
+        color: rgb(180, 180, 180);
+      }
+    }
+  }
+
+  .doctors-list-container {
+    .doctors-list {
+      margin-bottom: 2rem;
+
+      > :not(:last-child) {
+        margin-bottom: 1rem;
+      }
+
+      .doctor-card {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        padding: 2rem;
+        border: 1px solid $border-color;
+        border-radius: 1rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+          border-color: $border-hover;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+          width: 8rem;
+          height: 8rem;
+          object-fit: cover;
+          border-radius: 0.85rem;
+        }
+
+        .info {
+          align-self: flex-start;
+
+          .name {
+            color: rgb(var(--primary-text));
+          }
+
+          .degree {
+            color: $secondary-text;
+            font-size: 0.85rem;
+          }
+        }
+
+        .book-btn {
+          margin-left: auto;
+        }
+      }
+    }
+  }
+}
+
+.book-apointment-modal {
+  .intervals-container {
+    justify-self: center;
+
+    > :not(:last-child) {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .confirm-btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+@media (max-width: 768px) {
+  .browse-doctors-page-content {
+    .doctor-card {
+      flex-direction: column;
+      align-items: unset !important;
+
+      .book-btn {
+        margin-left: 0 !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .browse-doctors-page-content {
+    padding: 1.5rem;
+  }
+}

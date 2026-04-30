@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  width="140"
+  height="140"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <circle
+    cx="12"
+    cy="12"
+    r="10"
+    stroke="rgba(103,232,249,0.2)"
+    stroke-width="0.5"
+  />
+
+  <circle
+    cx="12"
+    cy="12"
+    r="7"
+    stroke="rgba(103,232,249,0.15)"
+    stroke-width="0.3"
+  />
+
+  <path
+    d="M9 12l2 2 4-4"
+    stroke="rgba(103,232,249,0.4)"
+    stroke-width="1"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <circle
+    cx="12"
+    cy="12"
+    r="3"
+    stroke="rgba(103,232,249,0.1)"
+    stroke-width="0.3"
+  />
+</svg>

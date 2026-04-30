@@ -1,0 +1,50 @@
+$secondary-text: rgb(102 102 102);
+$border-color: rgb(224, 224, 224);
+$border-hover: rgb(0, 83, 179);
+$success: rgb(5, 150, 105);
+$pending: rgb(217, 119, 6);
+$error: rgb(239, 68, 68);
+$hero-bg: linear-gradient(
+  135deg,
+  #0c1929 0%,
+  #132f5e 40%,
+  #0e2a52 70%,
+  #1e3a8a 100%
+);
+$hero-pattern: radial-gradient(#3b82f612 1px, #00000000 1px);
+$hero-glow-1: radial-gradient(circle, #3b82f633, #00000000 65%);
+$hero-glow-2: radial-gradient(circle, #06b6d41f, #00000000 65%);
+
+:root {
+  --primary: 0, 83, 179;
+  --primary-text: 26 26 26;
+  --secondary-text: 102 102 102;
+  --border-color: 224 224 224;
+  --border-hover: 0 83 179;
+  --success: 5 150 105;
+  --pending: 217 119 6;
+  --error: 239 68 68;
+  --navbar-bg: rgb(255 255 255 / 95%);
+}
+
+[data-theme="patient"] {
+  --primary: 0, 83, 179;
+  --primary-text: 26 26 26;
+  --secondary-text: 102 102 102;
+  --border-color: 224 224 224;
+  --border-hover: 0, 83, 179;
+  --success: 5, 150, 105;
+  --pending: 217, 119, 6;
+  --error: 239, 68, 68;
+  --navbar-bg: linear-gradient(135deg, #0f172a 0%, #152044 50%, #1e3a8a 100%);
+  --hero-bg: linear-gradient(
+    135deg,
+    #0c1929 0%,
+    #132f5e 40%,
+    #0e2a52 70%,
+    #1e3a8a 100%
+  );
+  --hero-pattern: radial-gradient(#3b82f612 1px, #00000000 1px);
+  --hero-glow-1: radial-gradient(circle, #3b82f633, #00000000 65%);
+  --hero-glow-2: radial-gradient(circle, #06b6d41f, #00000000 65%);
+}

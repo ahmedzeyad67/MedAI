@@ -1,0 +1,29 @@
+@use "../abstracts/theme-variables" as *;
+
+html {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  max-width: 95rem;
+  margin: auto;
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ant-pagination-item-active {
+  border-color: rgb(var(--primary)) !important;
+
+  a {
+    color: rgb(var(--primary)) !important;
+  }
+}

@@ -1,0 +1,278 @@
+import axios from "axios";
+
+function formatTime(time) {
+  const [hours, minutes] = time.split(":");
+
+  const date = new Date();
+  date.setHours(hours, minutes);
+
+  return date
+    .toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+    .toUpperCase();
+}
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function getDayMonth(dateStr) {
+  const date = new Date(dateStr);
+
+  return {
+    day: date.getDate(),
+    month: date.toLocaleString("en-US", { month: "short" }),
+  };
+}
+
+function getRemainingDaysDiff(date) {
+  const now = new Date();
+  const [year, month, day] = date.split("-").map(Number);
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const targetDay = new Date(year, month - 1, day);
+  const daysDiff = Math.round((targetDay - today) / (1000 * 60 * 60 * 24));
+  return daysDiff;
+}
+
+function getRemainingDaysLabel(daysDiff) {
+  if (daysDiff === 0) return "today";
+  if (daysDiff === 1) return "tomorrow";
+  if (daysDiff > 1) return `in ${daysDiff} days`;
+  if (daysDiff === -1) return "yesterday";
+  return `${Math.abs(daysDiff)} days ago`;
+}
+
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+});
+
+// Automatically attach token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (err) => Promise.reject(err),
+);
+
+// Handle refresh logic
+// let isRefreshing = false;
+// let failedQueue = [];
+
+// const processQueue = (error, token = null) => {
+//   failedQueue.forEach((prom) => {
+//     if (error) prom.reject(error);
+//     else prom.resolve(token);
+//   });
+//   failedQueue = [];
+// };
+
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     if (!error.config) return Promise.reject(error);
+
+//     const originalRequest = error.config;
+
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       const token = localStorage.getItem("token");
+//       const refreshToken = localStorage.getItem("refreshToken");
+
+//       if (!token || !refreshToken) {
+//         localStorage.removeItem("token");
+//         localStorage.removeItem("refreshToken");
+//         window.location.href = "/";
+//         return Promise.reject(error);
+//       }
+
+//       if (isRefreshing) {
+//         return new Promise((resolve, reject) => {
+//           failedQueue.push({
+//             resolve: (newToken) => {
+//               originalRequest.headers.Authorization = `Bearer ${newToken}`;
+//               resolve(api(originalRequest));
+//             },
+//             reject,
+//           });
+//         });
+//       }
+
+//       originalRequest._retry = true;
+//       isRefreshing = true;
+
+//       try {
+//         const res = await axios.post(
+//           `${import.meta.env.VITE_API_URL}/Auth/refresh`,
+//           {
+//             token,
+//             refreshToken,
+//           },
+//         );
+
+//         const newToken = res.data.token;
+//         const newRefreshToken = res.data.refreshToken;
+
+//         localStorage.setItem("token", newToken);
+//         localStorage.setItem("refreshToken", newRefreshToken);
+
+//         processQueue(null, newToken);
+
+//         originalRequest.headers.Authorization = `Bearer ${newToken}`;
+//         return api(originalRequest);
+//       } catch (err) {
+//         processQueue(err, null);
+
+//         localStorage.removeItem("token");
+//         localStorage.removeItem("refreshToken");
+
+//         window.location.href = "/login";
+//         return Promise.reject(err);
+//       } finally {
+//         isRefreshing = false;
+//       }
+//     }
+
+//     return Promise.reject(error);
+//   },
+// );
+
+// Auth API calls
+export const registerUser = (data) => api.post("/Auth/register", data);
+export const loginUser = (data) => api.post("/Auth/login", data);
+
+// User API calls
+export const getUser = async () => {
+  try {
+    const res = await api.get("/me");
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching user data:", err);
+    throw err;
+  }
+};
+
+export const changePassword = (data) => api.put("/me/change-password", data);
+
+// Patient API calls
+export const getDoctors = async (pageNumber = 1) => {
+  try {
+    const res = await api.get("/api/doctors/", {
+      params: { pageNumber, pageSize: 10 },
+    });
+
+    const data = res.data;
+
+    return {
+      doctors: data.items,
+      currentPage: data.pageNumber,
+      total: data.totalPages * 10,
+    };
+  } catch (err) {
+    console.error("Error fetching doctors:", err);
+    throw err;
+  }
+};
+
+export const getPatientBookings = async () => {
+  try {
+    const res = await api.get("/api/Bookings/my-bookings");
+
+    const processedBookings = res.data.items
+      .filter((booking) => getRemainingDaysDiff(booking.slot.date) >= 0)
+      .map((booking) => {
+        const { slot } = booking;
+        const { day, month } = getDayMonth(slot.date);
+        const daysDiff = getRemainingDaysDiff(slot.date);
+
+        return {
+          ...booking,
+          date: formatDate(slot.date),
+          startTime: formatTime(slot.startTime),
+          endTime: formatTime(slot.endTime),
+          remainingDays: getRemainingDaysLabel(daysDiff),
+          day: day,
+          month: month,
+        };
+      });
+
+    return processedBookings;
+  } catch (err) {
+    console.error("Error fetching bookings:", err);
+    throw err;
+  }
+};
+
+export const cancelBooking = async (id) => {
+  try {
+    const response = await api.delete(`/api/Bookings/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    throw error;
+  }
+};
+
+export const getPatientPastBookings = async () => {
+  try {
+    const res = await api.get("/api/Bookings/my-bookings");
+
+    const processedBookings = res.data.items
+      .filter((booking) => getRemainingDaysDiff(booking.slot.date) < 0)
+      .map((booking) => {
+        const { slot } = booking;
+        const { day, month } = getDayMonth(slot.date);
+        const daysDiff = getRemainingDaysDiff(slot.date);
+
+        return {
+          ...booking,
+          date: formatDate(slot.date),
+          startTime: formatTime(slot.startTime),
+          endTime: formatTime(slot.endTime),
+          remainingDays: getRemainingDaysLabel(daysDiff),
+          day: day,
+          month: month,
+        };
+      });
+
+    return processedBookings;
+  } catch (err) {
+    console.error("Error fetching bookings:", err);
+    throw err;
+  }
+};
+
+export const getDoctorAvailableTimes = async (doctorId) => {
+  const res = await api.get(`/api/Doctors/${doctorId}/available-times`);
+
+  return res.data
+    .filter((item) => item.availableSlots > 0)
+    .map((item) => {
+      return {
+        id: item.id,
+        date: item.date,
+        timeRange: `${formatTime(item.startTime)} - ${formatTime(item.endTime)}`,
+        fee: item.consultationFee,
+        availableSlots: item.availableSlots,
+      };
+    });
+};
+
+export const createBooking = async (doctorAvailableTimeId) => {
+  const res = await api.post(`/api/Bookings/${doctorAvailableTimeId}`);
+  return res.data;
+};
+
+export default api;

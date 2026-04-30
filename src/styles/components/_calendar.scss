@@ -1,0 +1,74 @@
+@use "../abstracts/theme-variables" as *;
+@use "../components/buttons" as buttons;
+
+.calendar {
+  .calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+
+    button {
+      padding: 0.8rem;
+      border-radius: 50%;
+      font-size: 1rem;
+    }
+
+    button[disabled] {
+      background-color: rgba(128, 128, 128, 0.3);
+      color: grey;
+      border-color: grey;
+      cursor: not-allowed;
+    }
+
+    .calendar-title {
+      font-weight: 700;
+      color: rgb(var(--primary-text));
+    }
+  }
+
+  table {
+    font-size: 1rem;
+  }
+
+  th,
+  td {
+    font-weight: 600 !important;
+  }
+
+  .ant-picker-calendar-date {
+    padding: 10px 16px;
+    min-width: unset !important;
+    height: unset !important;
+    line-height: unset !important;
+    border-radius: 0.85rem !important;
+    background: transparent !important;
+
+    &:hover {
+      background: transparent !important;
+    }
+  }
+
+  .ant-picker-calendar-date-today::before {
+    border-color: rgb(var(--primary)) !important;
+    border-radius: 0.85rem !important;
+  }
+
+  .ant-picker-cell:not(.ant-picker-cell-disabled) {
+    .ant-picker-cell-inner {
+      background: rgba(var(--primary), 0.2) !important;
+      color: rgba(0, 0, 0, 0.88) !important;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(var(--primary), 0.5) !important;
+      }
+    }
+  }
+
+  &.has-selected .ant-picker-cell-selected .ant-picker-cell-inner {
+    background: rgb(var(--primary)) !important;
+    color: white !important;
+  }
+}

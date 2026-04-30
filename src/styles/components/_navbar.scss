@@ -1,0 +1,163 @@
+@use "../abstracts/theme-variables" as *;
+@use "../components/buttons" as buttons;
+
+.navbar {
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  border-bottom: solid 1px $border-color;
+  backdrop-filter: blur(8px);
+}
+
+.navbar.public {
+  background-color: rgb(255 255 255 / 95%);
+}
+
+.navbar.private {
+  background: linear-gradient(
+    135deg,
+    rgb(15, 23, 42) 0%,
+    rgb(21, 32, 68) 50%,
+    rgb(30, 58, 138) 100%
+  );
+
+  .navbar-logo {
+    .text {
+      color: white;
+    }
+  }
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 95rem;
+  margin: auto;
+  padding: 1rem 3rem;
+}
+
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 1rem;
+  }
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+
+  .icon {
+    display: flex;
+    padding: 10px;
+    background-color: rgb(var(--primary));
+    color: white;
+    border-radius: 0.5rem;
+    font-size: 1.25rem;
+  }
+
+  .text {
+    color: rgb(var(--primary-text));
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  font-weight: 500;
+  button {
+    @include buttons.text-btn(
+      rgba(255, 255, 255, 0.55),
+      rgb(255, 255, 255),
+      0.08,
+      0.12
+    );
+
+    &:not(:last-child) {
+      margin-right: 0.2rem;
+    }
+  }
+
+  button.selected {
+    @include buttons.outlined-btn(
+      var(--primary),
+      white,
+      rgba(34, 136, 255, 0.22)
+    );
+  }
+}
+
+@media (max-width: 700px) {
+  .nav-links {
+    display: none;
+  }
+}
+
+.navbar-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toggle-drawer-btn {
+  display: none !important;
+  @include buttons.outlined-btn(
+    rgba(255, 255, 255, 0.12),
+    white,
+    rgba(255, 255, 255, 0.08),
+    0.12,
+    0.22
+  );
+}
+
+@media (max-width: 700px) {
+  .nav-links {
+    display: none;
+  }
+
+  .toggle-drawer-btn {
+    display: block !important;
+  }
+}
+
+.mobile-menu {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  border-top: solid 1px rgba(255, 255, 255, 0.12);
+  transition: all 0.3s ease;
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(-15px);
+    transition: all 0.3s ease;
+
+    button {
+      text-align: left;
+    }
+  }
+}
+
+.mobile-menu.open {
+  display: block;
+  max-height: fit-content;
+  opacity: 1;
+  padding: 1rem 2rem;
+
+  .nav-links {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
