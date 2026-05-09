@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar";
 import Hero from "../components/homepageSections/hero";
 import Features from "../components/homepageSections/features";
 import WorkFlow from "../components/homepageSections/work-flow";

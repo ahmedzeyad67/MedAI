@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../services/auth/useAuth";
 import { getPatientBookings } from "../../services/api";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navbar";
 import { Spin, Upload } from "antd";
 import PrivateHero from "../../components/private-hero";
 import bannerSvg from "@/assets/icons/patient-banner.svg";
