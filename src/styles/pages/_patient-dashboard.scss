@@ -1,232 +1,21 @@
 @use "../abstracts/theme-variables" as *;
 @use "../components/buttons" as buttons;
 
-.dashboard-content {
-  padding: 2rem 3rem;
-
-  > :not(:last-child) {
-    margin-bottom: 2rem;
-  }
-
-  .hero {
-    position: relative;
-    background: $hero-bg;
-    padding: 2.5rem;
-    border-radius: 1rem;
-    overflow: hidden;
-
-    .hero-pattern {
-      background-image: $hero-pattern;
-      background-size: 20px 20px;
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .hero-glow--1,
-    .hero-glow--2 {
-      position: absolute;
-      top: -6rem;
-      right: -4rem;
-      width: 24rem;
-      height: 24rem;
-      background: $hero-glow-1;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .hero-glow--2 {
-      background: $hero-glow-2;
-      width: 20rem;
-      height: 20rem;
-      inset: auto auto -8rem -6rem;
-    }
-
-    .hero-content {
-      z-index: 2;
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .hero-text {
-        max-width: 36rem;
-
-        > :not(:last-child) {
-          margin-bottom: 0.6rem;
-        }
-
-        .greeting {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: rgb(103 232 249);
-          font-size: 0.8rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-
-          span {
-            display: inline-block;
-            background: rgb(103 232 249);
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            animation: 2s ease-in-out infinite pulse-dot;
-          }
-
-          @keyframes pulse-dot {
-            0%,
-            100% {
-              opacity: 1;
-            }
-            50% {
-              opacity: 0.4;
-            }
-          }
-        }
-      }
-
-      .title {
-        color: white;
-        font-size: 2.25rem;
-        font-weight: 700;
-        letter-spacing: -0.03em;
-        line-height: 1.15;
-      }
-
-      .subtitle {
-        color: rgba(148, 163, 184);
-        font-size: 0.95rem;
-        line-height: 1.5;
-      }
-    }
-
-    .hero-decoration--right {
-      opacity: 0.4;
-      animation: 6s ease-in-out infinite float;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    @keyframes float {
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-8px);
-      }
-    }
-  }
-
-  .stats-container {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-
-    .stat-card {
-      flex: 1 300px;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      position: relative;
-      padding: 1.5rem;
-      border-radius: 1rem;
-      transition: all 0.3s ease;
-
-      &::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        opacity: 0;
-        height: 3px;
-        background-color: rgb(59, 130, 246);
-        transition: opacity 0.3s ease;
-        border-radius: 1rem 1rem 0 0;
-      }
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-
-        &::after {
-          opacity: 1;
-        }
-      }
-
-      svg {
-        width: 22px;
-        height: 22px;
-      }
-
-      .stat-card-content {
-        > :not(:last-child) {
-          margin-bottom: 0.5rem;
-        }
-
-        .label {
-          color: $secondary-text;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          font-size: 0.75rem;
-          font-weight: 700;
-        }
-
-        .value {
-          color: rgb(59, 130, 246);
-          font-size: 1.75rem;
-          font-weight: 700;
-          line-height: 1.2;
-        }
-
-        .description {
-          color: rgb(148, 163, 184);
-          font-size: 0.75rem;
-        }
-      }
-    }
-
-    .stat-card.has-link {
-      cursor: pointer;
-
-      .value {
-        font-size: 1.25rem;
-      }
-
-      svg {
-        width: 18px;
-        height: 18px;
-      }
-      .link-arrow {
-        margin-left: auto;
-        color: rgb(148, 163, 184);
-        transition: all 0.3s ease;
-      }
-
-      &:hover .link-arrow {
-        color: rgb(8, 145, 178);
-        transform: translateX(3px);
-      }
-    }
-  }
-
+.patient-dashboard {
   .next-appointment-container {
     display: flex;
     align-items: center;
     gap: 1rem;
     background: linear-gradient(135deg, rgb(239, 246, 255), rgb(219, 234, 254));
     padding: 1rem 1.5rem;
-    border: 1px solid rgba($border-hover, 0.12);
+    border: 1px solid rgb(var(--border-hover) / 0.12);
     border-radius: 1rem;
 
     .next-appointment-icon {
       display: flex;
       padding: 0.7rem;
       border-radius: 0.5rem;
-      background: rgba(var(--primary), 0.12);
+      background: rgb(var(--primary) / 0.12);
       color: rgb(var(--primary));
     }
 
@@ -246,7 +35,7 @@
         font-weight: 600;
 
         .date {
-          color: $secondary-text;
+          color: rgb(var(--secondary-text));
           font-weight: 400;
         }
       }
@@ -317,7 +106,7 @@
       }
 
       .description {
-        color: $secondary-text;
+        color: rgb(var(--secondary-text));
         font-size: 0.8rem;
       }
     }
@@ -330,7 +119,7 @@
         cursor: unset;
 
         &:hover {
-          border-color: $border-hover;
+          border-color: rgb(var(--border-hover));
         }
       }
 
@@ -351,7 +140,7 @@
         }
 
         .subtitle {
-          color: $secondary-text;
+          color: rgb(var(--secondary-text));
           font-size: 0.85rem;
         }
 
@@ -370,8 +159,8 @@
           }
 
           .file-type {
-            background: rgba(var(--primary), 0.12);
-            color: $secondary-text;
+            background: rgb(var(--primary) / 0.12);
+            color: rgb(var(--secondary-text));
             padding: 0.15rem 0.4rem;
             border-radius: 0.4rem;
           }
@@ -408,8 +197,8 @@
           top: 1rem;
           right: 1rem;
           @include buttons.outlined-btn(
-            $error,
-            $bgColor: rgba($error, 0.35),
+            rgb(var(--error)),
+            $bgColor: rgb(var(--error) / 0.35),
             $hoverOpacity: 0.45,
             $activeOpacity: 0.6
           );
@@ -424,8 +213,8 @@
 
       .analyze-btn {
         @include buttons.outlined-btn(
-          $success,
-          $bgColor: rgba($success, 0.35),
+          rgb(var(--success)),
+          $bgColor: rgb(var(--success) / 0.35),
           $hoverOpacity: 0.45,
           $activeOpacity: 0.6
         );
@@ -433,8 +222,8 @@
 
       .edit-btn {
         @include buttons.outlined-btn(
-          var(--primary),
-          $bgColor: rgba(var(--primary), 0.35),
+          rgb(var(--primary)),
+          $bgColor: rgb(var(--primary) / 0.35),
           $hoverOpacity: 0.45,
           $activeOpacity: 0.6
         );
@@ -458,7 +247,7 @@
         }
 
         .subtitle {
-          color: $secondary-text;
+          color: rgb(var(--secondary-text));
           font-size: 0.85rem;
         }
       }
@@ -474,24 +263,8 @@
       }
     }
   }
-}
 
-@media (max-width: 512px) {
-  .dashboard-content {
-    .hero-text {
-      .title {
-        font-size: 1.5rem !important;
-      }
-
-      .subtitle {
-        font-size: 0.85rem !important;
-      }
-    }
-
-    .hero-decoration--right {
-      display: none;
-    }
-
+  @media (max-width: 512px) {
     .next-appointment-container {
       padding: 1rem;
 
@@ -513,12 +286,8 @@
       }
     }
   }
-}
 
-@media (max-width: 480px) {
-  .dashboard-content {
-    padding: 1rem;
-
+  @media (max-width: 480px) {
     .xray-upload-container {
       padding: 1rem;
 

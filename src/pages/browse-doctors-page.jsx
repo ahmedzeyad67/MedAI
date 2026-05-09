@@ -9,22 +9,23 @@ export default function BrowseDoctorsPage() {
   const { user, role } = useAuth();
   const [doctors, setDoctors] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   const doctorsList = doctors.map((doctor) => (
     <PrivateDoctorCard key={doctor.id} doctor={doctor} role={role} />
   ));
 
   useEffect(() => {
-    loadDoctors(currentPage);
-  }, [currentPage]);
+    loadDoctors(currentPage, searchInput);
+  }, [currentPage, searchInput]);
 
-  const loadDoctors = async (page) => {
+  const loadDoctors = async (page, searchValue) => {
     try {
       setLoading(true);
 
-      const res = await getDoctors(page);
+      const res = await getDoctors(page, searchValue);
       setDoctors(res.doctors);
       setCurrentPage(res.currentPage);
       setTotal(res.total);
@@ -48,7 +49,8 @@ export default function BrowseDoctorsPage() {
             id="search-bar"
             className="search-bar"
             size="large"
-            placeholder="Search doctors by name..."
+            placeholder="Search doctors by name or specialty"
+            onChange={(e) => setSearchInput(e.target.value)}
           />
         </div>
         {loading ? (

@@ -18,14 +18,20 @@ export default function PrivateDoctorCard({ doctor, role }) {
   return (
     <div className="doctor-card">
       <img
-        src={`${doctor.img || "/src/assets/images/no-image.svg"}`}
+        src={`${doctor.imageUrl || "/src/assets/images/no-image.svg"}`}
         alt="Doctor"
+        draggable="false"
       />
       <div className="info">
-        <h3 className="name">
-          Dr. {doctor.firstName} {doctor.lastName}
-        </h3>
-        <p className="degree">{doctor.degree}</p>
+        <div>
+          <h3 className="name">
+            Dr. {doctor.firstName} {doctor.lastName}
+          </h3>
+          <p className="degree">
+            {doctor.speciality} • {doctor.degree}
+          </p>
+        </div>
+        <p className="description">{doctor.description}</p>
       </div>
       <button type="btn" className="book-btn" onClick={handleBookClick}>
         Book Appointment

@@ -6,7 +6,7 @@ export const useLogout = () => {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
-    navigate("/", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   return logout;

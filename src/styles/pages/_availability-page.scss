@@ -1,0 +1,258 @@
+@use "../abstracts/theme-variables" as *;
+@use "../components/buttons" as buttons;
+
+.availability-page-content {
+  padding: 2rem 3rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .title {
+      color: rgb(var(--primary-text));
+      font-size: 1.875rem;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: rgb(var(--secondary-text));
+      margin-bottom: 1rem;
+    }
+  }
+
+  .page-summary {
+    display: flex;
+    gap: 0.5rem;
+
+    .summary-card {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+
+      svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .value {
+        color: rgb(var(--primary-text));
+        font-size: 1.5rem;
+      }
+
+      .label {
+        color: rgb(var(--secondary-text));
+        font-size: 0.75rem;
+      }
+    }
+  }
+
+  .available-slots-container {
+    margin-top: 2rem;
+
+    > :not(:last-child) {
+      margin-bottom: 2rem;
+    }
+
+    .available-slots {
+      .date {
+        color: rgb(var(--primary-text));
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.02rem;
+      }
+
+      .slots {
+        > :not(:last-child) {
+          margin-bottom: 0.5rem;
+        }
+
+        .available-slot-card {
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+          padding: 1rem 1.5rem;
+
+          .info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-shrink: 0;
+
+            .time-interval {
+              color: rgb(var(--primary));
+              font-weight: 600;
+              flex-shrink: 0;
+
+              span {
+                margin-right: 0.5rem;
+              }
+            }
+
+            .details {
+              display: flex;
+              gap: 1.5rem;
+
+              .details-item {
+                display: flex;
+                flex-direction: column;
+                gap: 0.2rem;
+
+                .label {
+                  color: rgb(148, 163, 184);
+                  font-size: 0.7rem;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 0.04rem;
+                }
+
+                .value {
+                  color: rgb(var(--primary-text));
+                  font-size: 0.85rem;
+                  font-weight: 600;
+                  flex-shrink: 0;
+                }
+              }
+
+              .ant-input-number {
+                &:hover,
+                &:focus-within {
+                  border-color: rgb(var(--primary));
+                }
+
+                .ant-input-number-input {
+                  width: 30px;
+                  padding: 2px 0;
+                }
+
+                .ant-input-number-action[aria-disabled="false"]:hover {
+                  color: rgb(var(--primary));
+                }
+              }
+            }
+          }
+
+          .progress {
+            width: -webkit-fill-available;
+
+            p {
+              color: rgb(var(--secondary-text));
+              font-size: 0.75rem;
+            }
+          }
+
+          .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+
+            .save-btn {
+              @include buttons.text-btn(
+                rgb(var(--primary)),
+                rgb(var(--primary))
+              );
+            }
+
+            .delete-btn,
+            .cancel-btn {
+              @include buttons.text-btn(rgb(var(--error)), rgb(var(--error)));
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.add-time-slot-modal {
+  .ant-modal-title {
+    color: rgb(var(--primary-text));
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+
+  form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1rem;
+    padding: 1rem 1.5rem 0.5rem;
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .ant-picker,
+    .ant-input-number {
+      width: -webkit-fill-available;
+      border: 1px solid rgb(var(--border-color)) !important;
+
+      input {
+        color: rgb(var(--primary-text)) !important;
+
+        &::placeholder {
+          color: rgb(var(--secondary-text));
+          font-size: 0.9rem;
+        }
+      }
+
+      &:focus-within {
+        border-color: rgb(var(--primary)) !important;
+      }
+
+      .ant-picker-active-bar {
+        background: rgb(var(--primary)) !important;
+      }
+    }
+
+    .ant-form-item-label {
+      margin-bottom: 0.2rem !important;
+
+      .ant-form-item-required {
+        color: rgb(var(--primary-text)) !important;
+        height: unset !important;
+        font-weight: 500 !important;
+
+        &::before {
+          content: unset !important;
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .ant-alert-error {
+    color: rgb(255, 77, 79) !important;
+    background: rgba(255, 77, 80, 0.25) !important;
+    border: 1px solid rgb(255, 77, 79) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .availability-page-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .available-slot-card {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+
+    .info {
+      flex-direction: column;
+      align-items: flex-start !important;
+      gap: 1rem !important;
+    }
+  }
+}

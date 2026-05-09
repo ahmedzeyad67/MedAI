@@ -61,7 +61,7 @@ export default function ProfileDropdown({ user }) {
       menu={{ items, onClick: handleMenuClick }}
       trigger={["click"]}
       placement="bottomRight"
-      overlayClassName="profile-dropdown-overlay"
+      rootClassName="profile-dropdown-overlay"
       onOpenChange={setIsOpen}
     >
       <div className="profile-dropdown-trigger">

@@ -2,7 +2,7 @@
 
 .footer {
   background-color: rgb(245 247 250);
-  border-top: solid 1px $border-color;
+  border-top: solid 1px rgb(var(--border-color));
 
   .content {
     padding: 3rem;
@@ -24,7 +24,7 @@
       flex: 1;
 
       p {
-        color: $secondary-text;
+        color: rgb(var(--secondary-text));
         font-size: 0.9rem;
       }
     }
@@ -40,7 +40,7 @@
       flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
-      color: $secondary-text;
+      color: rgb(var(--secondary-text));
       font-size: 0.9rem;
       font-weight: 500;
     }
@@ -78,10 +78,10 @@
     display: flex;
     justify-content: space-between;
     padding-top: 2rem;
-    border-top: solid 1px $border-color;
+    border-top: solid 1px rgb(var(--border-color));
 
     p {
-      color: $secondary-text;
+      color: rgb(var(--secondary-text));
       font-size: 0.9rem;
     }
   }

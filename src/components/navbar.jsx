@@ -39,6 +39,9 @@ export default function Navbar({ user, role }) {
             <MedicineBoxOutlined />
           </div>
           <p className="text">MediScan</p>
+          {role && role !== "patient" && (
+            <span className="role-badge">{role}</span>
+          )}
         </div>
         <div className="nav-right">
           {navLinksList && <div className="nav-links">{navLinksList}</div>}

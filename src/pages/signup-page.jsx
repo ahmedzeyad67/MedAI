@@ -168,7 +168,7 @@ export default function SignupPage() {
             <Input.Password placeholder="••••••••" />
           </Form.Item>
 
-          {serverError && <Alert message={serverError} type="error" showIcon />}
+          {serverError && <Alert title={serverError} type="error" showIcon />}
 
           <Form.Item>
             <button type="btn">Create Account</button>

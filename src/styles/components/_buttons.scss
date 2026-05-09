@@ -1,4 +1,17 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts/theme-variables" as *;
+@use "sass:color";
+@use "sass:meta";
+@use "sass:string";
+
+@function alpha-bg($base, $alpha) {
+  @if meta.type-of($base) == "color" {
+    @return color.change($base, $alpha: $alpha);
+  }
+
+  @return string.unquote(
+    "color-mix(in srgb, #{$base} #{$alpha * 100%}, transparent)"
+  );
+}
 
 @mixin btn($bgColor) {
   display: flex;
@@ -8,7 +21,8 @@
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   border: none;
-  background: $bgColor;
+  background: $bgColor !important;
+  background-color: $bgColor !important;
   color: white;
   font-weight: 500;
   transition: all 0.2s ease-in-out;
@@ -28,7 +42,17 @@
 }
 
 button[type="btn"] {
-  @include btn($primary);
+  @include btn(rgb(var(--primary)));
+}
+
+@mixin disabled-btn($bgColor) {
+  @include btn($bgColor);
+  opacity: 0.4 !important;
+  cursor: not-allowed;
+}
+
+button[type="btn"]:disabled {
+  @include disabled-btn(rgb(var(--primary)));
 }
 
 @mixin text-btn(
@@ -50,12 +74,12 @@ button[type="btn"] {
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: rgba($bgColor, $hoverOpacity);
+    background-color: alpha-bg($bgColor, $hoverOpacity);
     color: white;
   }
 
   &:active {
-    background-color: rgba($bgColor, $activeOpacity);
+    background-color: alpha-bg($bgColor, $activeOpacity);
     color: white;
   }
 
@@ -66,7 +90,19 @@ button[type="btn"] {
 }
 
 button[type="text-btn"] {
-  @include text-btn($primary-text, $primary);
+  @include text-btn(rgb(var(--primary-text)), rgb(var(--primary)));
+}
+
+@mixin disabled-text-btn($textColor) {
+  @include text-btn($textColor, transparent);
+  opacity: 0.5 !important;
+  color: $textColor !important;
+  background-color: transparent !important;
+  cursor: not-allowed;
+}
+
+button[type="text-btn"]:disabled {
+  @include disabled-text-btn(rgb(var(--error)));
 }
 
 @mixin outlined-btn(
@@ -93,12 +129,12 @@ button[type="text-btn"] {
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: rgba($color, $hoverOpacity);
+    background-color: alpha-bg($color, $hoverOpacity);
     color: white;
   }
 
   &:active {
-    background-color: rgba($color, $activeOpacity);
+    background-color: alpha-bg($color, $activeOpacity);
     color: white;
   }
 
@@ -109,5 +145,17 @@ button[type="text-btn"] {
 }
 
 button[type="outlined-btn"] {
-  @include outlined-btn($primary);
+  @include outlined-btn(rgb(var(--primary)));
+}
+
+@mixin disabled-outlined-btn($color) {
+  @include outlined-btn($color);
+  opacity: 0.4 !important;
+  color: $color !important;
+  background-color: transparent !important;
+  cursor: not-allowed;
+}
+
+button[type="outlined-btn"]:disabled {
+  @include disabled-outlined-btn(rgb(var(--primary)));
 }

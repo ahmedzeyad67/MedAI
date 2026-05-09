@@ -94,7 +94,7 @@ export default function LoginPage() {
             />
           </Form.Item>
 
-          {serverError && <Alert message={serverError} type="error" showIcon />}
+          {serverError && <Alert title={serverError} type="error" showIcon />}
 
           <Form.Item>
             <button type="btn">Login</button>

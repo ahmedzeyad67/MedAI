@@ -1,4 +1,5 @@
 @use "../abstracts/theme-variables" as *;
+@use "../components/buttons" as buttons;
 
 html {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -20,10 +21,25 @@ button {
   transform: translate(-50%, -50%);
 }
 
+.ant-spin-dot-holder {
+  color: rgb(var(--primary)) !important;
+}
+
 .ant-pagination-item-active {
   border-color: rgb(var(--primary)) !important;
 
   a {
     color: rgb(var(--primary)) !important;
+  }
+}
+
+.ant-picker-panel-layout {
+  .ant-btn {
+    @include buttons.btn(rgb(var(--primary)));
+    margin: 6px 0;
+  }
+
+  .ant-btn[disabled] {
+    @include buttons.disabled-btn(rgb(var(--primary)));
   }
 }

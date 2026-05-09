@@ -5,25 +5,29 @@
   z-index: 1000;
   position: sticky;
   top: 0;
-  border-bottom: solid 1px $border-color;
+  border-bottom: solid 1px rgb(var(--border-color));
   backdrop-filter: blur(8px);
 }
 
-.navbar.public {
-  background-color: rgb(255 255 255 / 95%);
+.navbar {
+  background: var(--navbar-bg);
 }
 
 .navbar.private {
-  background: linear-gradient(
-    135deg,
-    rgb(15, 23, 42) 0%,
-    rgb(21, 32, 68) 50%,
-    rgb(30, 58, 138) 100%
-  );
-
   .navbar-logo {
     .text {
       color: white;
+    }
+
+    .role-badge {
+      color: var(--hero-text-color);
+      background-color: var(--nav-link-bg);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.5rem;
+      border-radius: 10rem;
     }
   }
 }
@@ -40,6 +44,12 @@
 @media (max-width: 480px) {
   .navbar-container {
     padding: 1rem;
+
+    .navbar-logo {
+      .role-badge {
+        display: none;
+      }
+    }
   }
 }
 
@@ -74,6 +84,7 @@
 .nav-links {
   display: flex;
   font-weight: 500;
+
   button {
     @include buttons.text-btn(
       rgba(255, 255, 255, 0.55),
@@ -81,6 +92,7 @@
       0.08,
       0.12
     );
+    transition: all 0.2s ease-in-out;
 
     &:not(:last-child) {
       margin-right: 0.2rem;
@@ -89,14 +101,14 @@
 
   button.selected {
     @include buttons.outlined-btn(
-      var(--primary),
+      rgb(var(--primary)),
       white,
-      rgba(34, 136, 255, 0.22)
+      var(--nav-link-bg)
     );
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 950px) {
   .nav-links {
     display: none;
   }
@@ -118,7 +130,7 @@
   );
 }
 
-@media (max-width: 700px) {
+@media (max-width: 950px) {
   .nav-links {
     display: none;
   }

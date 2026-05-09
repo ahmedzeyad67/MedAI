@@ -106,11 +106,11 @@
       display: flex;
       > :first-child {
         margin-right: 1rem;
-        @include buttons.btn(0 184 219);
+        @include buttons.btn(rgb(0 184 219));
       }
 
       > :last-child {
-        @include buttons.outlined-btn(0 184 219);
+        @include buttons.outlined-btn(rgb(0 184 219));
       }
     }
 
@@ -215,12 +215,12 @@
     flex: 1;
     padding: 2rem;
     background-color: white;
-    border: 1px solid $border-color;
+    border: 1px solid rgb(var(--border-color));
     border-radius: 1rem;
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: $border-hover;
+      border-color: rgb(var(--border-hover));
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
 
@@ -236,7 +236,7 @@
     }
 
     .description {
-      color: $secondary-text;
+      color: rgb(var(--secondary-text));
       font-size: 0.9rem;
       line-height: 1.6;
     }
@@ -277,7 +277,7 @@
       height: 2px;
       background: linear-gradient(
         90deg,
-        rgba(var(--primary), 0.65),
+        rgb(var(--primary) / 0.65),
         transparent
       );
       border-radius: 0 50% 50% 0;
@@ -290,7 +290,7 @@
     }
 
     .description {
-      color: $secondary-text;
+      color: rgb(var(--secondary-text));
       font-size: 0.9rem;
       line-height: 1.6;
     }
@@ -317,12 +317,12 @@
     .doctor-card {
       flex: 1;
       padding: 2rem;
-      border: 1px solid $border-color;
+      border: 1px solid rgb(var(--border-color));
       border-radius: 1rem;
       transition: all 0.2s ease;
 
       &:hover {
-        border-color: $border-hover;
+        border-color: rgb(var(--border-hover));
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
       }
 
@@ -347,7 +347,7 @@
       }
 
       .speciality {
-        color: $secondary-text;
+        color: rgb(var(--secondary-text));
         font-size: 0.9rem;
         margin-bottom: 1.5rem;
       }
@@ -355,7 +355,7 @@
       .review-summary {
         display: flex;
         justify-content: space-between;
-        color: $secondary-text;
+        color: rgb(var(--secondary-text));
       }
 
       .rating span {
@@ -381,9 +381,9 @@
     .content {
       margin: 6rem 3rem;
       padding: 4rem;
-      border: 1px solid rgba($border-hover, 0.45);
+      border: 1px solid rgb(var(--border-hover) / 0.45);
       border-radius: 1rem;
-      background-color: rgba(var(--primary), 0.08);
+      background-color: rgb(var(--primary) / 0.08);
     }
 
     @media (max-width: 480px) {

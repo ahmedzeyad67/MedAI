@@ -15,18 +15,29 @@ function formatTime(time) {
     .toUpperCase();
 }
 
-function formatDate(dateStr) {
+function formatDate(dateStr, type) {
   const date = new Date(dateStr);
 
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  if (type === "short") {
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  if (type === "long") {
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  }
 }
 
-function getDayMonth(dateStr) {
+function getDayAndMonth(dateStr) {
   const date = new Date(dateStr);
 
   return {
@@ -50,6 +61,11 @@ function getRemainingDaysLabel(daysDiff) {
   if (daysDiff > 1) return `in ${daysDiff} days`;
   if (daysDiff === -1) return "yesterday";
   return `${Math.abs(daysDiff)} days ago`;
+}
+
+function getImageUrl(path) {
+  if (!path) return null;
+  return `${import.meta.env.VITE_API_URL}/${path}`;
 }
 
 const api = axios.create({
@@ -166,96 +182,62 @@ export const getUser = async () => {
 
 export const changePassword = (data) => api.put("/me/change-password", data);
 
+export const updateUserProfile = (data) => api.put("/me/info", data);
+
 // Patient API calls
-export const getDoctors = async (pageNumber = 1) => {
-  try {
-    const res = await api.get("/api/doctors/", {
-      params: { pageNumber, pageSize: 10 },
-    });
+export const getDoctors = async (pageNumber = 1, searchValue = "") => {
+  const res = await api.get("/api/doctors/", {
+    params: { pageNumber, pageSize: 10, searchValue },
+  });
 
-    const data = res.data;
+  const data = res.data;
 
-    return {
-      doctors: data.items,
-      currentPage: data.pageNumber,
-      total: data.totalPages * 10,
-    };
-  } catch (err) {
-    console.error("Error fetching doctors:", err);
-    throw err;
-  }
+  const doctors = data.items.map((doctor) => ({
+    ...doctor,
+    imageUrl: getImageUrl(doctor.imageUrl),
+  }));
+
+  return {
+    doctors,
+    currentPage: data.pageNumber,
+    total: data.totalCount,
+  };
 };
 
-export const getPatientBookings = async () => {
-  try {
-    const res = await api.get("/api/Bookings/my-bookings");
+export const getPatientBookings = async (type) => {
+  const res = await api.get("/api/Bookings/my-bookings", {
+    params: { type },
+  });
 
-    const processedBookings = res.data.items
-      .filter((booking) => getRemainingDaysDiff(booking.slot.date) >= 0)
-      .map((booking) => {
-        const { slot } = booking;
-        const { day, month } = getDayMonth(slot.date);
-        const daysDiff = getRemainingDaysDiff(slot.date);
+  const data = res.data;
 
-        return {
-          ...booking,
-          date: formatDate(slot.date),
-          startTime: formatTime(slot.startTime),
-          endTime: formatTime(slot.endTime),
-          remainingDays: getRemainingDaysLabel(daysDiff),
-          day: day,
-          month: month,
-        };
-      });
+  const processedBookings = data.items.map((booking) => {
+    const { slot } = booking;
+    const { day, month } = getDayAndMonth(slot.date);
+    const daysDiff = getRemainingDaysDiff(slot.date);
 
-    return processedBookings;
-  } catch (err) {
-    console.error("Error fetching bookings:", err);
-    throw err;
-  }
+    return {
+      ...booking,
+      date: formatDate(slot.date, "short"),
+      startTime: formatTime(slot.startTime),
+      endTime: formatTime(slot.endTime),
+      remainingDays: getRemainingDaysLabel(daysDiff),
+      day: day,
+      month: month,
+      consultationFee: slot.consultationFee,
+    };
+  });
+
+  return { items: processedBookings, total: data.totalCount };
 };
 
 export const cancelBooking = async (id) => {
-  try {
-    const response = await api.delete(`/api/Bookings/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error cancelling booking:", error);
-    throw error;
-  }
+  const res = await api.delete(`/api/Bookings/${id}`);
+  return res.data;
 };
 
-export const getPatientPastBookings = async () => {
-  try {
-    const res = await api.get("/api/Bookings/my-bookings");
-
-    const processedBookings = res.data.items
-      .filter((booking) => getRemainingDaysDiff(booking.slot.date) < 0)
-      .map((booking) => {
-        const { slot } = booking;
-        const { day, month } = getDayMonth(slot.date);
-        const daysDiff = getRemainingDaysDiff(slot.date);
-
-        return {
-          ...booking,
-          date: formatDate(slot.date),
-          startTime: formatTime(slot.startTime),
-          endTime: formatTime(slot.endTime),
-          remainingDays: getRemainingDaysLabel(daysDiff),
-          day: day,
-          month: month,
-        };
-      });
-
-    return processedBookings;
-  } catch (err) {
-    console.error("Error fetching bookings:", err);
-    throw err;
-  }
-};
-
-export const getDoctorAvailableTimes = async (doctorId) => {
-  const res = await api.get(`/api/Doctors/${doctorId}/available-times`);
+export const getDoctorSchedule = async (doctorId) => {
+  const res = await api.get(`/api/Doctors/${doctorId}/schedule`);
 
   return res.data
     .filter((item) => item.availableSlots > 0)
@@ -270,9 +252,100 @@ export const getDoctorAvailableTimes = async (doctorId) => {
     });
 };
 
-export const createBooking = async (doctorAvailableTimeId) => {
-  const res = await api.post(`/api/Bookings/${doctorAvailableTimeId}`);
+export const createBooking = async (slotId) => {
+  const res = await api.post(`/api/Bookings/${slotId}`);
   return res.data;
+};
+
+// Doctor API calls
+export const getDoctorProfile = async () => {
+  try {
+    const res = await api.get("/api/Doctors/me");
+    return { ...res.data, imageUrl: getImageUrl(res.data.imageUrl) };
+  } catch (err) {
+    console.error("Error fetching doctor profile:", err);
+    throw err;
+  }
+};
+
+export const updateDoctorProfile = async (data) => {
+  const formData = new FormData();
+
+  formData.append("FirstName", data.firstName);
+  formData.append("LastName", data.lastName);
+  formData.append("Description", data.description);
+  formData.append("Image", data.imgFile);
+
+  const res = await api.put("/api/Doctors/complete-profile", formData);
+  return res.data;
+};
+
+export const addSchedule = async (payload) => {
+  const res = await api.post("/api/Schedules", payload);
+  return res.data;
+};
+
+export const getSchedule = async () => {
+  const res = await api.get("/api/Schedules");
+
+  const data = res.data.map((item) => ({
+    ...item,
+    date: formatDate(item.date, "long"),
+  }));
+
+  const summary = data.reduce(
+    (acc, day) => {
+      day.slots.forEach((slot) => {
+        acc.totalSlots += slot.capacity;
+        acc.bookedTotal += slot.bookedCount;
+        acc.availableTotal += slot.availableSpots;
+      });
+      return acc;
+    },
+    { totalSlots: 0, bookedTotal: 0, availableTotal: 0 },
+  );
+
+  return { data, summary };
+};
+
+export const updateScheduleCapacity = async (id, newCapacity) => {
+  const res = await api.put(`/api/Schedules/${id}/capacity`, { newCapacity });
+  return res.data;
+};
+
+export const deleteSchedule = async (id) => {
+  const res = await api.delete(`/api/Schedules/${id}`);
+  return res.data;
+};
+
+export const getDoctorAppointments = async (pageNumber = 1, type) => {
+  const res = await api.get("/api/Doctors/my-appointments", {
+    params: {
+      pageNumber,
+      pageSize: 10,
+      type,
+    },
+  });
+
+  const data = res.data;
+
+  const processedAppointments = data.items.map((item) => ({
+    ...item,
+    date: formatDate(item.date, "long"),
+
+    appointments: item.appointments.map((appointment) => ({
+      ...appointment,
+      startTime: formatTime(appointment.startTime),
+      endTime: formatTime(appointment.endTime),
+      status: "Upcoming",
+    })),
+  }));
+
+  return {
+    items: processedAppointments,
+    currentPage: data.pageNumber,
+    total: data.totalCount,
+  };
 };
 
 export default api;

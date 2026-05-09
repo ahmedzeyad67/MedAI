@@ -1,24 +1,7 @@
-$secondary-text: rgb(102 102 102);
-$border-color: rgb(224, 224, 224);
-$border-hover: rgb(0, 83, 179);
-$success: rgb(5, 150, 105);
-$pending: rgb(217, 119, 6);
-$error: rgb(239, 68, 68);
-$hero-bg: linear-gradient(
-  135deg,
-  #0c1929 0%,
-  #132f5e 40%,
-  #0e2a52 70%,
-  #1e3a8a 100%
-);
-$hero-pattern: radial-gradient(#3b82f612 1px, #00000000 1px);
-$hero-glow-1: radial-gradient(circle, #3b82f633, #00000000 65%);
-$hero-glow-2: radial-gradient(circle, #06b6d41f, #00000000 65%);
-
 :root {
-  --primary: 0, 83, 179;
+  --primary: 0 83 179;
   --primary-text: 26 26 26;
-  --secondary-text: 102 102 102;
+  --secondary-text: 138 138 138;
   --border-color: 224 224 224;
   --border-hover: 0 83 179;
   --success: 5 150 105;
@@ -28,15 +11,10 @@ $hero-glow-2: radial-gradient(circle, #06b6d41f, #00000000 65%);
 }
 
 [data-theme="patient"] {
-  --primary: 0, 83, 179;
-  --primary-text: 26 26 26;
-  --secondary-text: 102 102 102;
-  --border-color: 224 224 224;
-  --border-hover: 0, 83, 179;
-  --success: 5, 150, 105;
-  --pending: 217, 119, 6;
-  --error: 239, 68, 68;
+  --primary: 0 83 179;
+  --border-hover: 0 83 179;
   --navbar-bg: linear-gradient(135deg, #0f172a 0%, #152044 50%, #1e3a8a 100%);
+  --nav-link-bg: rgba(34, 136, 255, 0.22);
   --hero-bg: linear-gradient(
     135deg,
     #0c1929 0%,
@@ -47,4 +25,34 @@ $hero-glow-2: radial-gradient(circle, #06b6d41f, #00000000 65%);
   --hero-pattern: radial-gradient(#3b82f612 1px, #00000000 1px);
   --hero-glow-1: radial-gradient(circle, #3b82f633, #00000000 65%);
   --hero-glow-2: radial-gradient(circle, #06b6d41f, #00000000 65%);
+  --hero-text-color: rgb(103, 232, 249);
+}
+
+[data-theme="doctor"] {
+  --primary: 5 150 105;
+  --border-hover: 16 185 129;
+  --navbar-bg: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+  --nav-link-bg: rgba(52, 211, 153, 0.22);
+  --hero-bg: linear-gradient(135deg, #064e3b 0%, #065f46 40%, #047857 100%);
+  --hero-pattern: radial-gradient(#10b98112 1px, #00000000 1px);
+  --hero-glow-1: radial-gradient(circle, #10b98133, #00000000 65%);
+  --hero-glow-2: radial-gradient(circle, #06b6d41f, #00000000 65%);
+  --hero-text-color: rgb(110 231 183);
+}
+
+[data-theme="admin"] {
+  --primary: 99 102 241; /* indigo */
+  --primary-text: 17 24 39;
+  --secondary-text: 75 85 99;
+  --border-color: 229 231 235;
+  --border-hover: 99 102 241;
+  --success: 16 185 129;
+  --pending: 217 119 6;
+  --error: 239 68 68;
+  --navbar-bg: linear-gradient(135deg, #0f172a 0%, #3f3cbb 50%, #6366f1 100%);
+  --hero-bg: linear-gradient(135deg, #0b1020 0%, #2b2a76 50%, #4f46e5 100%);
+  --hero-pattern: radial-gradient(#6366f112 1px, #00000000 1px);
+  --hero-glow-1: radial-gradient(circle, #6366f133, #00000000 65%);
+  --hero-glow-2: radial-gradient(circle, #8b5cf6 1f, #00000000 65%);
+  --hero-text-color: rgb(110 231 183);
 }

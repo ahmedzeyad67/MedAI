@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Calendar, Modal, notification } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import {
-  getDoctorAvailableTimes,
+  getDoctorSchedule,
   createBooking,
   getPatientBookings,
 } from "../services/api";
@@ -42,27 +42,32 @@ export default function BookAppointmentModal({
     resetState();
 
     const fetchData = async () => {
-      const [availableData, bookings] = await Promise.all([
-        getDoctorAvailableTimes(doctorId),
-        getPatientBookings(),
-      ]);
+      try {
+        const [availableData, bookingsData] = await Promise.all([
+          getDoctorSchedule(doctorId),
+          getPatientBookings("upcoming"),
+        ]);
 
-      const bookedIds = new Set(bookings.map((b) => b.slot.id));
+        const bookedIds = new Set(bookingsData.items.map((b) => b.slot.id));
 
-      const filtered = availableData.filter(
-        (interval) => !bookedIds.has(interval.id),
-      );
+        const filtered = availableData.filter(
+          (interval) => !bookedIds.has(interval.id),
+        );
 
-      const availableSet = new Set(filtered.map((d) => d.date));
+        const availableSet = new Set(filtered.map((d) => d.date));
 
-      const map = {};
-      filtered.forEach((d) => {
-        if (!map[d.date]) map[d.date] = [];
-        map[d.date].push(d);
-      });
+        const map = {};
 
-      setAvailableDays(availableSet);
-      setAvailableMap(map);
+        filtered.forEach((d) => {
+          if (!map[d.date]) map[d.date] = [];
+          map[d.date].push(d);
+        });
+
+        setAvailableDays(availableSet);
+        setAvailableMap(map);
+      } catch (err) {
+        console.error("Error fetching booking data:", err);
+      }
     };
 
     fetchData();
@@ -115,7 +120,7 @@ export default function BookAppointmentModal({
       await createBooking(selectedInterval.id);
 
       api.success({
-        message: "Appointment Confirmed",
+        title: "Appointment Confirmed",
         description: "Your appointment has been booked successfully.",
         placement: "bottomLeft",
         duration: 3,
@@ -125,7 +130,7 @@ export default function BookAppointmentModal({
     } catch (err) {
       console.error(err);
       api.error({
-        message: "Failed to Confirm Appointment",
+        title: "Failed to Confirm Appointment",
         description:
           "There was an error booking your appointment. Please try again.",
         placement: "bottomLeft",
@@ -143,7 +148,6 @@ export default function BookAppointmentModal({
       footer={[
         <button
           key="confirm"
-          className="confirm-btn"
           type="btn"
           style={{ width: "100%" }}
           onClick={handleConfirm}

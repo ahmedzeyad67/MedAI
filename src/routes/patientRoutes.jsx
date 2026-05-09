@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import PatientDashboard from "../pages/patient-pages/patient-dashboard";
-import AppointmentsPage from "../pages/patient-pages/appointments-page";
+import AppointmentsPage from "../pages/appointments-page";
 
 export default function PatientRoutes() {
   return (

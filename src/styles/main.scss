@@ -8,7 +8,9 @@
 @use "./components/calendar";
 @use "./pages/homepage";
 @use "./pages/signup-login-page.scss";
-@use "./pages/dashboard-page";
+@use "./pages/dashboard-base";
+@use "./pages/patient-dashboard";
 @use "./pages/edit-profile-page";
 @use "./pages/browse-doctors-page";
 @use "./pages/appointments-page";
+@use "./pages/availability-page";

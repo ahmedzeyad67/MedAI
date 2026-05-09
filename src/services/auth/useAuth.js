@@ -1,21 +1,35 @@
 import { useState, useEffect, useMemo } from "react";
 import { getUserRole } from "./getUserRole";
-import { getUser } from "../api";
+import { getDoctorProfile, getUser } from "../api";
 
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const role = useMemo(() => getUserRole(), []);
 
   useEffect(() => {
+    if (role) {
+      document.documentElement.setAttribute("data-theme", role);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+  }, [role]);
+
+  useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (!token || !role) {
       setUser(null);
       setLoading(false);
       return;
     }
 
-    getUser()
+    setLoading(true);
+
+    const request = role === "doctor" ? getDoctorProfile() : getUser();
+
+    request
       .then((data) => {
         setUser(data);
       })
@@ -24,6 +38,7 @@ export function useAuth() {
           localStorage.removeItem("token");
           localStorage.removeItem("refreshToken");
         }
+
         setUser(null);
       })
       .finally(() => {

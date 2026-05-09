@@ -45,7 +45,7 @@
   }
 
   .ant-dropdown-menu-item {
-    color: rgba(var(--primary-text), 0.85) !important;
+    color: rgb(var(--primary-text) / 0.85) !important;
     font-weight: 500 !important;
 
     &:hover {
@@ -86,7 +86,7 @@
 
       .email {
         font-size: 0.75rem;
-        color: $secondary-text;
+        color: rgb(var(--secondary-text));
         margin: 0;
         margin-top: 0.125rem;
       }
@@ -94,10 +94,10 @@
   }
 
   .profile-dropdown-signout {
-    color: rgba($error, 0.85) !important;
+    color: rgb(var(--error) / 0.85) !important;
 
     &:hover {
-      color: $error !important;
+      color: rgb(var(--error)) !important;
     }
   }
 }

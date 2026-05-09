@@ -1,7 +1,9 @@
 import AnalysisIcon from "@/assets/icons/analysis.svg?react";
 import PendingIcon from "@/assets/icons/pending.svg?react";
 import ApprovedIcon from "@/assets/icons/approved.svg?react";
-import { CalendarOutlined, TeamOutlined } from "@ant-design/icons";
+import CalendarIcon from "@/assets/icons/calendar.svg?react";
+import SlotsIcon from "@/assets/icons/slots.svg?react";
+import { TeamOutlined } from "@ant-design/icons";
 
 export const patientStatCards = [
   {
@@ -48,14 +50,6 @@ export const doctorStatCards = [
   },
 
   {
-    label: "Today Appointments",
-    value: "2",
-    description: "Scheduled for today",
-    icon: CalendarOutlined,
-    color: "rgb(59, 130, 246)",
-  },
-
-  {
     label: "Approved Today",
     value: "1",
     description: "Analyses you approved",
@@ -64,10 +58,18 @@ export const doctorStatCards = [
   },
 
   {
+    label: "Today Appointments",
+    value: "2",
+    description: "Scheduled for today",
+    icon: CalendarIcon,
+    color: "rgb(59, 130, 246)",
+  },
+
+  {
     label: "Availability",
     value: "Manage Slots",
     description: "Set your Schedule",
-    icon: PendingIcon,
+    icon: SlotsIcon,
     color: "rgb(8, 145, 178)",
     link: "/availability",
   },
