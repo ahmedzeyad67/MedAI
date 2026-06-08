@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../services/auth/useAuth";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar";
 import { notification, Pagination, Spin } from "antd";
 import PendingIcon from "@/assets/icons/pending.svg?react";
 import CalendarIcon from "@/assets/icons/calendar.svg?react";

@@ -1,5 +1,5 @@
 import { useAuth } from "../services/auth/useAuth";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/navbar";
 import { Avatar, Spin, Upload } from "antd";
 import EditProfileForm from "../components/edit-profile-form";
 import { useEffect, useState } from "react";

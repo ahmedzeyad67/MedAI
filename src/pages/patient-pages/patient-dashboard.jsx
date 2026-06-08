@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../services/auth/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { getPatientStats, uploadXray } from "../../services/api";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/navbar";
 import { notification, Spin, Upload } from "antd";
 import PrivateHero from "../../components/private-hero";
 import bannerSvg from "@/assets/icons/patient-banner.svg";

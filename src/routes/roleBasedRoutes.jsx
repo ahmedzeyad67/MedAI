@@ -1,6 +1,6 @@
-import AdminRoutes from "./AdminRoutes";
-import DoctorRoutes from "./DoctorRoutes";
-import PatientRoutes from "./PatientRoutes";
+import AdminRoutes from "./adminRoutes";
+import DoctorRoutes from "./doctorRoutes";
+import PatientRoutes from "./patientRoutes";
 import { Navigate } from "react-router-dom";
 import { Spin } from "antd";
 import { useAuth } from "../services/auth/useAuth";
