@@ -15,6 +15,7 @@ export default function EditProfileForm({
   role,
   imgFile,
   isAccountCompleted,
+  refreshUser,
 }) {
   const [form] = Form.useForm();
   const isLockedOpen = role === "doctor" ? !isAccountCompleted : false;
@@ -58,6 +59,7 @@ export default function EditProfileForm({
       }
 
       if (!isAccountCompleted && role === "doctor") {
+        await refreshUser();
         navigate("/dashboard", { replace: true });
       }
 
@@ -163,7 +165,7 @@ export default function EditProfileForm({
               ]}
             >
               <TextArea
-                rows={4}
+                autoSize={{ minRows: 4 }}
                 placeholder={
                   !isAccountCompleted
                     ? "Write a short description about your experience, approach to care, and areas of expertise..."

@@ -1,30 +1,30 @@
-import boltIcon from "@/assets/icons/bolt.svg";
-import shieldIcon from "@/assets/icons/shield.svg";
-import usersIcon from "@/assets/icons/users.svg";
-import checkIcon from "@/assets/icons/check.svg";
+import BoltIcon from "@/assets/icons/bolt.svg?react";
+import ShieldIcon from "@/assets/icons/shield.svg?react";
+import UsersIcon from "@/assets/icons/users.svg?react";
+import CheckIcon from "@/assets/icons/check.svg?react";
 
 export default function Features() {
   const featuresCards = [
     {
-      icon: boltIcon,
+      icon: BoltIcon,
       title: "AI-Assisted Analysis",
       desription:
         "Advanced machine learning model classifies lung X-rays into 5 disease categories with high accuracy",
     },
     {
-      icon: shieldIcon,
+      icon: ShieldIcon,
       title: "Secure & Compliant",
       desription:
         "HIPAA-compliant platform with end-to-end encryption for patient data protection",
     },
     {
-      icon: usersIcon,
+      icon: UsersIcon,
       title: "Expert Review",
       desription:
         "All AI results are reviewed and verified by qualified medical professionals",
     },
     {
-      icon: checkIcon,
+      icon: CheckIcon,
       title: "Fast Results",
       desription: "Get preliminary analysis results within minutes",
     },
@@ -32,7 +32,7 @@ export default function Features() {
   const featuresCardsList = featuresCards.map((card) => {
     return (
       <div key={card.title} className="features-card">
-        <img className="icon" src={card.icon} alt="card-icon" />
+        <card.icon className="icon" />
         <h3 className="title">{card.title}</h3>
         <p className="description">{card.desription}</p>
       </div>

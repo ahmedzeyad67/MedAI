@@ -49,12 +49,14 @@ export default function Navbar({ user, role }) {
             {role ? (
               <>
                 <ProfileDropdown user={user} />
-                <button
-                  className="toggle-drawer-btn"
-                  onClick={() => setIsDrawerOpen((prev) => !prev)}
-                >
-                  {isDrawerOpen ? <CloseOutlined /> : <MenuOutlined />}
-                </button>
+                {navLinksList && (
+                  <button
+                    className="toggle-drawer-btn"
+                    onClick={() => setIsDrawerOpen((prev) => !prev)}
+                  >
+                    {isDrawerOpen ? <CloseOutlined /> : <MenuOutlined />}
+                  </button>
+                )}
               </>
             ) : (
               <>

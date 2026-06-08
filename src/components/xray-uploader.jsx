@@ -1,4 +1,4 @@
-import { Upload } from "antd";
+import { Alert, Image, Upload } from "antd";
 import {
   CloudUploadOutlined,
   PlusOutlined,
@@ -7,15 +7,19 @@ import {
 
 const { Dragger } = Upload;
 
-export default function XrayUploader({ file, setFile, handleBeforeUpload }) {
+export default function XrayUploader({
+  img,
+  removeSelectedImage,
+  handleBeforeUpload,
+}) {
   return (
     <Dragger
-      className={`xray-upload-zone ${file ? "has-file" : ""}`}
+      className={`xray-upload-zone ${img ? "has-file" : ""}`}
       beforeUpload={handleBeforeUpload}
       showUploadList={false}
       openFileDialogOnClick={false}
     >
-      {!file ? (
+      {!img ? (
         <div className="upload-zone-placeholder">
           <CloudUploadOutlined className="icon" />
           <p className="title">Drag and drop your X-ray here</p>
@@ -36,9 +40,9 @@ export default function XrayUploader({ file, setFile, handleBeforeUpload }) {
         </div>
       ) : (
         <>
-          <img src={URL.createObjectURL(file)} alt="preview" />
+          <Image src={img} alt="preview" />
 
-          <button className="remove-btn" onClick={() => setFile(null)}>
+          <button className="remove-btn" onClick={() => removeSelectedImage()}>
             <CloseOutlined />
           </button>
         </>

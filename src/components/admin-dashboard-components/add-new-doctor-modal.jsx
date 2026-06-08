@@ -1,75 +1,77 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getUserRole } from "../services/auth/getUserRole";
-import { registerUser } from "../services/api";
-import { MedicineBoxOutlined } from "@ant-design/icons";
-import { Alert, Form, Input } from "antd";
+import { Alert, Form, Input, Modal, notification } from "antd";
+import { addNewDoctor } from "../../services/api";
 
-export default function SignupPage() {
+export default function AddNewDoctorModal({ isOpen, setIsOpen, setDoctors }) {
   const [form] = Form.useForm();
   const [serverError, setServerError] = useState(null);
-  const navigate = useNavigate();
+  const [api, contextHolder] = notification.useNotification();
 
-  const onFinish = async (values) => {
+  function handleCancel() {
+    setIsOpen(false);
+    form.resetFields();
+  }
+
+  const handleSubmit = async (values) => {
     const payload = { ...values };
     delete payload.confirmPassword;
 
     try {
       setServerError(null);
 
-      const res = await registerUser(payload);
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
+      await addNewDoctor(payload);
+      setDoctors((prev) => [...prev, payload]);
 
-      const role = getUserRole();
-      if (!role) {
-        localStorage.removeItem("token");
-        setServerError("Something went wrong. Please try again.");
-        return;
-      }
-      navigate("/dashboard", { replace: true });
-
+      setIsOpen(false);
       form.resetFields();
-    } catch (err) {
-      console.error("Registration failed:", err);
-
-      if (err.response?.status === 409) {
-        const message =
-          err.response.data?.errors?.message || "User already exists";
-        setServerError(message);
+      api.success({
+        title: "Doctor Added",
+        description: "The new doctor has been added successfully.",
+        placement: "bottomLeft",
+        duration: 3,
+      });
+    } catch (error) {
+      const description = error?.response?.data?.description;
+      if (description) {
+        setServerError(description);
       } else {
-        setServerError("Signup failed. Please try again.");
+        setServerError("Something went wrong. Please try again.");
       }
     }
   };
 
   return (
-    <div className="signup-page-container">
-      <div className="header">
-        <div className="icon">
-          <MedicineBoxOutlined />
-        </div>
-        <h1>MediScan</h1>
-        <p>Create your account</p>
-      </div>
-      <div className="form-container">
-        <div className="form-header">
-          <h2 className="title">Get Started</h2>
-          <p className="description">
-            Create an account to upload and analyze X-rays
-          </p>
-        </div>
+    <>
+      <Modal
+        title="Add New Doctor"
+        className="add-new-doctor-modal"
+        centered
+        open={isOpen}
+        onCancel={handleCancel}
+        footer={
+          <div className="action-buttons">
+            <button type="text-btn" onClick={handleCancel}>
+              Cancel
+            </button>
+            <button type="btn" onClick={form.submit}>
+              Add Doctor
+            </button>
+          </div>
+        }
+      >
+        <p className="description">
+          Create a new doctor profile on the system.
+        </p>
         <Form
-          layout="vertical"
           form={form}
-          name="register"
-          onFinish={onFinish}
+          layout="vertical"
+          size="large"
+          onFinish={handleSubmit}
           onValuesChange={() => {
             if (serverError) setServerError(null);
           }}
-          size="large"
-          scrollToFirstError
           validateTrigger="onSubmit"
+          scrollToFirstError
         >
           <Form.Item
             name="firstName"
@@ -77,13 +79,13 @@ export default function SignupPage() {
             rules={[
               {
                 required: true,
-                message: "Please enter your first name",
+                message: "Please enter doctor's first name",
               },
               { min: 3, message: "Name must be at least 3 characters" },
               { max: 25, message: "Name cannot exceed 25 characters" },
             ]}
           >
-            <Input placeholder="e.g., John" />
+            <Input />
           </Form.Item>
 
           <Form.Item
@@ -92,30 +94,54 @@ export default function SignupPage() {
             rules={[
               {
                 required: true,
-                message: "Please enter your last name",
+                message: "Please enter doctor's last name",
               },
               { min: 3, message: "Name must be at least 3 characters" },
               { max: 25, message: "Name cannot exceed 25 characters" },
             ]}
           >
-            <Input placeholder="e.g., Doe" />
+            <Input />
           </Form.Item>
 
           <Form.Item
             name="email"
-            label="E-mail"
+            label="Email"
+            className="full"
             rules={[
               {
-                type: "email",
-                message: "The input is not valid E-mail!",
+                required: true,
+                message: "Please enter doctor's email",
               },
+              { type: "email", message: "Please enter a valid email" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="speciality"
+            label="Speciality"
+            rules={[
               {
                 required: true,
-                message: "Please enter your E-mail!",
+                message: "Please enter doctor's speciality",
               },
             ]}
           >
-            <Input placeholder="you@example.com" />
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="degree"
+            label="Degree"
+            rules={[
+              {
+                required: true,
+                message: "Please enter doctor's degree",
+              },
+            ]}
+          >
+            <Input />
           </Form.Item>
 
           <Form.Item
@@ -124,7 +150,7 @@ export default function SignupPage() {
             rules={[
               {
                 required: true,
-                message: "Please enter your password!",
+                message: "Please enter a password",
               },
               {
                 validator: (_, value) => {
@@ -153,7 +179,7 @@ export default function SignupPage() {
             rules={[
               {
                 required: true,
-                message: "Please confirm your password!",
+                message: "Please confirm password",
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -168,18 +194,12 @@ export default function SignupPage() {
             <Input.Password placeholder="••••••••" />
           </Form.Item>
 
-          {serverError && <Alert title={serverError} type="error" showIcon />}
-
-          <Form.Item>
-            <button type="btn">Create Account</button>
-          </Form.Item>
+          {serverError && (
+            <Alert title={serverError} type="error" showIcon className="full" />
+          )}
         </Form>
-        <div className="form-footer">
-          <p>
-            Already have an account? <a href="/login">Sign in</a>
-          </p>
-        </div>
-      </div>
-    </div>
+      </Modal>
+      {contextHolder}
+    </>
   );
 }

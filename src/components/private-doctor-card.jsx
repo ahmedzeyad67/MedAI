@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BookAppointmentModal from "./book-appointment-modal";
+import BookAppointmentModal from "./patient-dashboard-components/book-appointment-modal";
 
 export default function PrivateDoctorCard({ doctor, role }) {
   const navigate = useNavigate();

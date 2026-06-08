@@ -1,43 +1,100 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../services/auth/useAuth";
-import { getPatientBookings } from "../../services/api";
+import { Link, useNavigate } from "react-router-dom";
+import { getPatientStats, uploadXray } from "../../services/api";
 import Navbar from "../../components/Navbar";
-import { Spin, Upload } from "antd";
+import { notification, Spin, Upload } from "antd";
 import PrivateHero from "../../components/private-hero";
 import bannerSvg from "@/assets/icons/patient-banner.svg";
 import StatCard from "../../components/stat-card";
 import { patientStatCards } from "../../config/dashboardConfig";
 import XrayUploader from "../../components/xray-uploader";
+import PatientXrayAnalysisCard from "../../components/patient-dashboard-components/patient-xray-analysis-card";
 import {
   ArrowRightOutlined,
-  CalendarOutlined,
   CheckOutlined,
+  CloudUploadOutlined,
   MenuOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import PictureIcon from "@/assets/icons/picture.svg?react";
+import CalendarIcon from "@/assets/icons/calendar.svg?react";
 
 export default function PatientDashboard() {
   const { user } = useAuth();
-  const [nextBooking, setNextBooking] = useState(null);
-  const [file, setFile] = useState(null);
+  const navigate = useNavigate();
+  const [statsValues, setStatsValues] = useState({});
+  const [nextAppointment, setNextAppointment] = useState(null);
+  const [recentAnalysis, setRecentAnalysis] = useState([]);
+  const [imgPreview, setImgPreview] = useState(null);
+  const [imgFile, setImgFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
 
-  const statCardsList = patientStatCards.map((card) => (
-    <StatCard key={card.label} card={card} />
+  const stats = patientStatCards.map((card) => ({
+    ...card,
+    value: statsValues[card.key] || 0,
+  }));
+  const statCardsList = stats.map((card) => (
+    <StatCard key={card.key} card={card} />
   ));
 
   function handleBeforeUpload(file) {
-    setFile(file);
+    setImgPreview(URL.createObjectURL(file));
+    setImgFile(file);
     return false;
   }
 
+  function removeSelectedImage() {
+    setImgPreview(null);
+    setImgFile(null);
+  }
+
+  const handleXrayUpload = async () => {
+    if (!imgFile) return;
+
+    try {
+      setIsUploading(true);
+
+      await uploadXray(imgFile);
+
+      api.success({
+        message: "Upload Successful",
+        description: "Your X-ray image has been uploaded successfully.",
+        placement: "bottomLeft",
+        duration: 3,
+      });
+
+      removeSelectedImage();
+    } catch (err) {
+      console.error("Upload failed:", err);
+      api.error({
+        message: "Upload Failed",
+        description:
+          err.response?.status === 400
+            ? "A previous X-ray analysis is already under review."
+            : "Failed to upload X-ray image.",
+        placement: "bottomLeft",
+        duration: 3,
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadNextBooking = async () => {
+    const loadStats = async () => {
       setLoading(true);
       try {
-        const data = await getPatientBookings("upcoming");
-        setNextBooking(data.items[0]);
+        const data = await getPatientStats();
+        setStatsValues({
+          totalAnalyses: data.totalAnalysis,
+          pendingAnalysis: data.unrevisedAnalysis,
+          completedAnalysis: data.revisedAnalysis,
+        });
+        setNextAppointment(data.nextAppointment);
+        setRecentAnalysis(data.recentAnalysis);
       } catch (err) {
         console.error(err);
       } finally {
@@ -45,8 +102,12 @@ export default function PatientDashboard() {
       }
     };
 
-    loadNextBooking();
+    loadStats();
   }, []);
+
+  const recentAnalysisList = recentAnalysis.map((card) => (
+    <PatientXrayAnalysisCard key={card.id} card={card} size="small" />
+  ));
 
   return (
     <div className="dashboard-container patient-dashboard">
@@ -59,7 +120,7 @@ export default function PatientDashboard() {
             <PrivateHero
               greeting="Good Morning"
               title="Welcome to MediScan"
-              subtitle="Upload your X-rays for AI-powered analysis and expert doctor review"
+              subtitle="Upload your X-rays for AI-assisted analysis and expert doctor review"
               banner={bannerSvg}
             />
 
@@ -67,26 +128,26 @@ export default function PatientDashboard() {
 
             <div className="next-appointment-container">
               <div className="next-appointment-icon">
-                <CalendarOutlined />
+                <CalendarIcon />
               </div>
               <div className="next-appointment-content">
                 <div className="title">Next Appointment</div>
-                {nextBooking ? (
+                {nextAppointment ? (
                   <div className="details">
-                    Dr. {nextBooking.doctor.firstName}{" "}
-                    {nextBooking.doctor.lastName} ·{" "}
+                    Dr. {nextAppointment.doctor.firstName}{" "}
+                    {nextAppointment.doctor.lastName} ·{" "}
                     <span className="date">
-                      {nextBooking.date}
-                      <span> at {nextBooking?.startTime}</span>
+                      {nextAppointment.slot.date}
+                      <span> at {nextAppointment.slot.startTime}</span>
                     </span>
                   </div>
                 ) : (
                   <p className="no-appointments">No upcoming appointments.</p>
                 )}
               </div>
-              <a href="/appointments" className="view-all-link">
+              <Link to="/appointments" className="view-all-link">
                 View All <ArrowRightOutlined className="link-arrow" />
-              </a>
+              </Link>
             </div>
 
             <div className="xray-upload-container">
@@ -103,22 +164,27 @@ export default function PatientDashboard() {
                 </div>
               </div>
               <XrayUploader
-                file={file}
-                setFile={setFile}
+                img={imgPreview}
+                removeSelectedImage={removeSelectedImage}
                 handleBeforeUpload={handleBeforeUpload}
               />
-              {file && (
+              {imgPreview && (
                 <div className="preview-action-buttons">
                   <Upload
                     beforeUpload={handleBeforeUpload}
                     showUploadList={false}
                   >
-                    <button className="edit-btn">
-                      Change image <PlusOutlined />
+                    <button type="outlined-btn" disabled={isUploading}>
+                      <PlusOutlined /> Change Image
                     </button>
                   </Upload>
-                  <button className="analyze-btn">
-                    Analyze <CheckOutlined />
+                  <button
+                    type="btn"
+                    onClick={handleXrayUpload}
+                    disabled={isUploading}
+                  >
+                    <CloudUploadOutlined />{" "}
+                    {isUploading ? "Uploading..." : "Upload X-ray"}
                   </button>
                 </div>
               )}
@@ -127,20 +193,31 @@ export default function PatientDashboard() {
             <div className="recent-analysis-container">
               <div className="recent-analysis-header">
                 <div className="text">
-                  <p className="title">Recent Analysis</p>
+                  <p
+                    className="title"
+                    onClick={() => console.log(recentAnalysis, statsValues)}
+                  >
+                    Recent Analysis
+                  </p>
                   <p className="subtitle">Your latest X-ray analysis results</p>
                 </div>
-                <button type="btn">
+                <button type="btn" onClick={() => navigate("/xray-analysis")}>
                   <MenuOutlined style={{ marginRight: 6 }} /> View All
                 </button>
               </div>
               <div className="recent-analysis-content">
-                <p className="no-recents">No recent analysis available.</p>
+                {recentAnalysis.length > 0 ? (
+                  <div className="analysis-list">{recentAnalysisList}</div>
+                ) : (
+                  <p className="no-recents">No recent analysis available.</p>
+                )}
               </div>
             </div>
           </div>
         </>
       )}
+
+      {contextHolder}
     </div>
   );
 }

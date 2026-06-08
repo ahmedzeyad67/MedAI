@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../services/auth/useAuth";
 import Navbar from "../components/Navbar";
 import { notification, Pagination, Spin } from "antd";
-import PatientAppointmentCard from "../components/patientAppointmentCard";
+import PendingIcon from "@/assets/icons/pending.svg?react";
+import CalendarIcon from "@/assets/icons/calendar.svg?react";
+import PatientAppointmentCard from "../components/patient-dashboard-components/patient-appointment-card";
+import DoctorAppointmentCard from "../components/doctor-dashboard-components/doctor-appointment-card";
 import {
   cancelBooking,
   getDoctorAppointments,
   getPatientBookings,
 } from "../services/api";
-import PendingIcon from "@/assets/icons/pending.svg?react";
-import CalendarIcon from "@/assets/icons/calendar.svg?react";
-import DoctorAppointmentCard from "../components/doctorAppointmentCard";
 
 export default function AppointmentsPage() {
   const [api, contextHolder] = notification.useNotification();
@@ -21,6 +21,11 @@ export default function AppointmentsPage() {
   const [pastTotal, setPastTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  function handleTabChange(newTab) {
+    setTab(newTab);
+    setCurrentPage(1);
+  }
 
   useEffect(() => {
     const loadBookings = async (page, role) => {
@@ -39,13 +44,7 @@ export default function AppointmentsPage() {
           pastData = await getDoctorAppointments(page, "past");
         }
 
-        if (tab === "upcoming") {
-          setBookingsMap(data);
-          setCurrentPage(data.currentPage);
-        } else {
-          setBookingsMap(pastData);
-          setCurrentPage(pastData.currentPage);
-        }
+        tab === "upcoming" ? setBookingsMap(data) : setBookingsMap(pastData);
 
         setUpcomingTotal(data.total);
         setPastTotal(pastData.total);
@@ -129,7 +128,7 @@ export default function AppointmentsPage() {
             <button
               type={tab === "upcoming" ? "btn" : "text-btn"}
               className="tab-btn"
-              onClick={() => setTab("upcoming")}
+              onClick={() => handleTabChange("upcoming")}
             >
               <CalendarIcon /> Upcoming{" "}
               <span className="tab-value">{upcomingTotal}</span>
@@ -137,7 +136,7 @@ export default function AppointmentsPage() {
             <button
               type={tab === "past" ? "btn" : "text-btn"}
               className="tab-btn"
-              onClick={() => setTab("past")}
+              onClick={() => handleTabChange("past")}
             >
               <PendingIcon /> Past{" "}
               <span className="tab-value">{pastTotal}</span>
@@ -149,24 +148,28 @@ export default function AppointmentsPage() {
           <Spin className="loading" size="large" />
         ) : (
           <>
-            {role === "patient" ? (
-              <div className="appointments-list-container">
-                {patientAppointmentsList}
-              </div>
-            ) : (
+            {bookingsMap.items?.length > 0 ? (
               <>
-                <div className="appointments-list-container">
-                  {doctorAppointmentsList}
-                </div>
-                {doctorAppointmentsList.length > 0 && (
-                  <Pagination
-                    current={currentPage}
-                    total={tab === "upcoming" ? upcomingTotal : pastTotal}
-                    onChange={setCurrentPage}
-                    align="center"
-                  />
+                {role === "patient" ? (
+                  <div className="appointments-list-container">
+                    {patientAppointmentsList}
+                  </div>
+                ) : (
+                  <>
+                    <div className="appointments-list-container">
+                      {doctorAppointmentsList}
+                    </div>
+                    <Pagination
+                      current={currentPage}
+                      total={tab === "upcoming" ? upcomingTotal : pastTotal}
+                      onChange={setCurrentPage}
+                      align="center"
+                    />
+                  </>
                 )}
               </>
+            ) : (
+              <p className="no-data">{`No ${tab} appointments available.`}</p>
             )}
           </>
         )}

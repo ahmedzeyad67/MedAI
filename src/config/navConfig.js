@@ -1,27 +1,20 @@
-import {
-  CalendarOutlined,
-  ClockCircleOutlined,
-  DotChartOutlined,
-  HomeOutlined,
-  TeamOutlined,
-} from "@ant-design/icons";
+import HomeIcon from "@/assets/icons/home.svg?react";
+import DoctorIcon from "@/assets/icons/doctor.svg?react";
+import CalendarIcon from "@/assets/icons/calendar.svg?react";
+import ClockIcon from "@/assets/icons/pending.svg?react";
+import XrayAnalysisIcon from "@/assets/icons/ai-analysis.svg?react";
 
 export const navLinksByRole = {
   patient: [
-    { label: "Home", path: "/dashboard", icon: HomeOutlined },
-    { label: "Doctors", path: "/doctors", icon: TeamOutlined },
-    { label: "Appointments", path: "/appointments", icon: CalendarOutlined },
-    { label: "AI Analysis", path: "/ai-analysis", icon: DotChartOutlined },
+    { label: "Home", path: "/dashboard", icon: HomeIcon },
+    { label: "Doctors", path: "/doctors", icon: DoctorIcon },
+    { label: "Appointments", path: "/appointments", icon: CalendarIcon },
+    { label: "X-ray Analysis", path: "/xray-analysis", icon: XrayAnalysisIcon },
   ],
   doctor: [
-    { label: "Home", path: "/dashboard", icon: HomeOutlined },
-    { label: "AI Analysis", path: "/ai-analysis", icon: DotChartOutlined },
-    { label: "Appointments", path: "/appointments", icon: CalendarOutlined },
-    { label: "Availability", path: "/availability", icon: ClockCircleOutlined },
-  ],
-  admin: [
-    { label: "Home", path: "/dashboard", icon: HomeOutlined },
-    { label: "Doctors", path: "/doctors", icon: TeamOutlined },
-    { label: "Appointments", path: "/appointments", icon: CalendarOutlined },
+    { label: "Home", path: "/dashboard", icon: HomeIcon },
+    { label: "X-ray Analysis", path: "/xray-analysis", icon: XrayAnalysisIcon },
+    { label: "Appointments", path: "/appointments", icon: CalendarIcon },
+    { label: "Availability", path: "/availability", icon: ClockIcon },
   ],
 };

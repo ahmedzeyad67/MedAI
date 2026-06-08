@@ -8,9 +8,9 @@ export default function DoctorAppointmentCard({ appointment }) {
       </div>
       <div className="details">
         <h3 className="patient-name">
-          {appointment.patientFirstName} {appointment.patientLastName}
+          {appointment.firstName} {appointment.lastName}
         </h3>
-        <p className="patient-email">{appointment.patientEmail}</p>
+        <p className="patient-email">{appointment.email}</p>
         <p className="timestamp">
           <span>
             <ClockCircleOutlined /> {appointment.startTime} -{" "}

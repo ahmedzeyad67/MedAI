@@ -7,7 +7,7 @@ import { CameraOutlined } from "@ant-design/icons";
 import noImg from "@/assets/images/no-image.svg";
 
 export default function EditProfilePage() {
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, refreshUser } = useAuth();
   const [profileData, setProfileData] = useState();
   const [imgFile, setImgFile] = useState();
   const [imgPreview, setImgPreview] = useState();
@@ -84,6 +84,7 @@ export default function EditProfilePage() {
             <div className="form-container">
               <EditProfileForm
                 role={role}
+                refreshUser={refreshUser}
                 profileData={profileData}
                 setProfileData={setProfileData}
                 imgFile={imgFile}

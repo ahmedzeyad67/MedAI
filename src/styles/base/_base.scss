@@ -25,6 +25,28 @@ button {
   color: rgb(var(--primary)) !important;
 }
 
+.search-bar {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+
+  &:hover {
+    border-color: rgb(var(--border-hover));
+  }
+
+  &:focus {
+    border-color: rgb(var(--border-hover));
+  }
+
+  &:focus-within {
+    border-color: rgb(var(--border-hover));
+  }
+
+  &::placeholder {
+    color: rgb(180, 180, 180);
+  }
+}
+
 .ant-pagination-item-active {
   border-color: rgb(var(--primary)) !important;
 
@@ -42,4 +64,16 @@ button {
   .ant-btn[disabled] {
     @include buttons.disabled-btn(rgb(var(--primary)));
   }
+}
+
+.avatar {
+  background-color: rgb(var(--primary));
+}
+
+.no-data {
+  color: rgb(185, 185, 185);
+  font-weight: 700;
+  font-size: 1.15rem;
+  font-style: italic;
+  text-align: center;
 }

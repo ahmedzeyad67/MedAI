@@ -49,7 +49,7 @@ export default function BrowseDoctorsPage() {
             id="search-bar"
             className="search-bar"
             size="large"
-            placeholder="Search doctors by name or specialty"
+            placeholder="Search doctors by name or speciality"
             onChange={(e) => setSearchInput(e.target.value)}
           />
         </div>
@@ -57,13 +57,19 @@ export default function BrowseDoctorsPage() {
           <Spin className="loading" size="large" />
         ) : (
           <div className="doctors-list-container">
-            <div className="doctors-list">{doctorsList}</div>
-            <Pagination
-              current={currentPage}
-              total={total}
-              onChange={setCurrentPage}
-              align="center"
-            />
+            {doctorsList.length > 0 ? (
+              <>
+                <div className="doctors-list">{doctorsList}</div>
+                <Pagination
+                  current={currentPage}
+                  total={total}
+                  onChange={setCurrentPage}
+                  align="center"
+                />
+              </>
+            ) : (
+              <p className="no-data">No doctors found.</p>
+            )}
           </div>
         )}
       </div>

@@ -9,7 +9,7 @@ import {
   Alert,
   notification,
 } from "antd";
-import { addSchedule } from "../services/api";
+import { addSchedule } from "../../services/api";
 
 export default function AddTimeSlotModal({
   isModalOpen,
@@ -73,7 +73,7 @@ export default function AddTimeSlotModal({
         onCancel={handleCancel}
         footer={
           <div className="action-buttons">
-            <button type="outlined-btn" onClick={handleCancel}>
+            <button type="text-btn" onClick={handleCancel}>
               Cancel
             </button>
             <button type="btn" onClick={form.submit}>
@@ -87,6 +87,10 @@ export default function AddTimeSlotModal({
           layout="vertical"
           size="large"
           onFinish={handleSubmit}
+          onValuesChange={() => {
+            if (serverError) setServerError(null);
+          }}
+          validateTrigger="onSubmit"
           scrollToFirstError
         >
           <Form.Item

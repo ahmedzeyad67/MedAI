@@ -1,4 +1,5 @@
 import axios from "axios";
+import { logout } from "./auth/useLogout";
 
 function formatTime(time) {
   const [hours, minutes] = time.split(":");
@@ -72,6 +73,11 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
 
+const authPaths = ["/Auth/login", "/Auth/register", "/Auth/refresh"];
+let refreshPromise = null;
+
+const isAuthRequest = (url) => authPaths.some((path) => url?.includes(path));
+
 // Automatically attach token
 api.interceptors.request.use(
   (config) => {
@@ -84,90 +90,87 @@ api.interceptors.request.use(
   (err) => Promise.reject(err),
 );
 
-// Handle refresh logic
-// let isRefreshing = false;
-// let failedQueue = [];
-
-// const processQueue = (error, token = null) => {
-//   failedQueue.forEach((prom) => {
-//     if (error) prom.reject(error);
-//     else prom.resolve(token);
-//   });
-//   failedQueue = [];
-// };
-
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     if (!error.config) return Promise.reject(error);
-
-//     const originalRequest = error.config;
-
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       const token = localStorage.getItem("token");
-//       const refreshToken = localStorage.getItem("refreshToken");
-
-//       if (!token || !refreshToken) {
-//         localStorage.removeItem("token");
-//         localStorage.removeItem("refreshToken");
-//         window.location.href = "/";
-//         return Promise.reject(error);
-//       }
-
-//       if (isRefreshing) {
-//         return new Promise((resolve, reject) => {
-//           failedQueue.push({
-//             resolve: (newToken) => {
-//               originalRequest.headers.Authorization = `Bearer ${newToken}`;
-//               resolve(api(originalRequest));
-//             },
-//             reject,
-//           });
-//         });
-//       }
-
-//       originalRequest._retry = true;
-//       isRefreshing = true;
-
-//       try {
-//         const res = await axios.post(
-//           `${import.meta.env.VITE_API_URL}/Auth/refresh`,
-//           {
-//             token,
-//             refreshToken,
-//           },
-//         );
-
-//         const newToken = res.data.token;
-//         const newRefreshToken = res.data.refreshToken;
-
-//         localStorage.setItem("token", newToken);
-//         localStorage.setItem("refreshToken", newRefreshToken);
-
-//         processQueue(null, newToken);
-
-//         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-//         return api(originalRequest);
-//       } catch (err) {
-//         processQueue(err, null);
-
-//         localStorage.removeItem("token");
-//         localStorage.removeItem("refreshToken");
-
-//         window.location.href = "/login";
-//         return Promise.reject(err);
-//       } finally {
-//         isRefreshing = false;
-//       }
-//     }
-
-//     return Promise.reject(error);
-//   },
-// );
-
 // Auth API calls
 export const registerUser = (data) => api.post("/Auth/register", data);
 export const loginUser = (data) => api.post("/Auth/login", data);
+export const refreshToken = (data) => api.post("/Auth/refresh", data);
+
+export const refreshTokens = () => {
+  const token = localStorage.getItem("token");
+  const refreshTokenValue = localStorage.getItem("refreshToken");
+
+  if (!token || !refreshTokenValue) {
+    return Promise.reject(new Error("Missing refresh tokens"));
+  }
+
+  if (!refreshPromise) {
+    refreshPromise = axios
+      .post(`${import.meta.env.VITE_API_URL}/Auth/refresh`, {
+        token,
+        refreshToken: refreshTokenValue,
+      })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+        api.defaults.headers.common.Authorization = `Bearer ${res.data.token}`;
+        return res.data.token;
+      })
+      .catch((refreshError) => {
+        const status = refreshError?.response?.status;
+        if (status === 400 || status === 401) {
+          logout();
+        }
+        throw refreshError;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+};
+
+// handle refresh token
+api.interceptors.response.use(
+  (response) => response,
+
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    if (isAuthRequest(originalRequest.url)) {
+      return Promise.reject(error);
+    }
+
+    // prevent infinite retry loop
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        const token = localStorage.getItem("token");
+        const refreshToken = localStorage.getItem("refreshToken");
+
+        if (!token || !refreshToken) {
+          logout();
+          return Promise.reject(error);
+        }
+
+        const newToken = await refreshTokens();
+
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
+        return api(originalRequest);
+      } catch (refreshError) {
+        return Promise.reject(refreshError);
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 // User API calls
 export const getUser = async () => {
@@ -185,6 +188,35 @@ export const changePassword = (data) => api.put("/me/change-password", data);
 export const updateUserProfile = (data) => api.put("/me/info", data);
 
 // Patient API calls
+export const getPatientStats = async () => {
+  const res = await api.get("/me/dashboard");
+  const data = res.data;
+
+  if (data.nextAppointment?.slot) {
+    data.nextAppointment.slot = {
+      ...data.nextAppointment.slot,
+      date: formatDate(data.nextAppointment.slot.date, "short"),
+      startTime: formatTime(data.nextAppointment.slot.startTime),
+      endTime: formatTime(data.nextAppointment.slot.endTime),
+    };
+  }
+
+  data.recentAnalysis = data.recentAnalysis.map((item) => ({
+    ...item,
+    imageUrl: getImageUrl(item.imageUrl),
+    creationDateInfo: {
+      date: formatDate(item.createdAt, "long"),
+      ...getDayAndMonth(item.createdAt),
+    },
+    confirmationDateInfo: {
+      date: formatDate(item.confirmedAt, "long"),
+      ...getDayAndMonth(item.confirmedAt),
+    },
+  }));
+
+  return data;
+};
+
 export const getDoctors = async (pageNumber = 1, searchValue = "") => {
   const res = await api.get("/api/doctors/", {
     params: { pageNumber, pageSize: 10, searchValue },
@@ -257,6 +289,57 @@ export const createBooking = async (slotId) => {
   return res.data;
 };
 
+export const uploadXray = async (file) => {
+  const formData = new FormData();
+  formData.append("Image", file);
+
+  const res = await api.post("/api/Xrays/upload", formData);
+  return res.data;
+};
+
+export const getPatientXrays = async () => {
+  const res = await api.get("/api/Xrays/my-history", {
+    params: {
+      pageNumber: 1,
+      pageSize: 100000,
+    },
+  });
+
+  return {
+    ...res.data,
+    items: res.data.items.map((item) => ({
+      ...item,
+      imageUrl: getImageUrl(item.imageUrl),
+      creationDateInfo: {
+        date: formatDate(item.createdAt, "long"),
+        ...getDayAndMonth(item.createdAt),
+      },
+      confirmationDateInfo: {
+        date: formatDate(item.confirmedAt, "long"),
+        ...getDayAndMonth(item.confirmedAt),
+      },
+    })),
+  };
+};
+
+export const getReviewedXrayDetails = async (xrayId) => {
+  const res = await api.get(`/api/Xrays/${xrayId}`);
+  const data = res.data;
+
+  return {
+    ...data,
+    imageUrl: getImageUrl(data.imageUrl),
+    creationDateInfo: {
+      date: formatDate(data.createdAt, "long"),
+      ...getDayAndMonth(data.createdAt),
+    },
+    confirmationDateInfo: {
+      date: formatDate(data.confirmedAt, "long"),
+      ...getDayAndMonth(data.confirmedAt),
+    },
+  };
+};
+
 // Doctor API calls
 export const getDoctorProfile = async () => {
   try {
@@ -278,6 +361,28 @@ export const updateDoctorProfile = async (data) => {
 
   const res = await api.put("/api/Doctors/complete-profile", formData);
   return res.data;
+};
+
+export const getDoctorStats = async () => {
+  const res = await api.get("/api/Doctors/dashboard");
+
+  return {
+    ...res.data,
+    unrevisedList: res.data.unrevisedList.map((item) => ({
+      ...item,
+      imageUrl: getImageUrl(item.imageUrl),
+      date: formatDate(item.createdAt, "long"),
+      ...getDayAndMonth(item.createdAt),
+      aI_Confidence: Math.round(item.aI_Confidence),
+    })),
+    todayAppointmentsList: res.data.todayAppointmentsList.map(
+      (appointment) => ({
+        ...appointment,
+        startTime: formatTime(appointment.startTime),
+        endTime: formatTime(appointment.endTime),
+      }),
+    ),
+  };
 };
 
 export const addSchedule = async (payload) => {
@@ -337,7 +442,6 @@ export const getDoctorAppointments = async (pageNumber = 1, type) => {
       ...appointment,
       startTime: formatTime(appointment.startTime),
       endTime: formatTime(appointment.endTime),
-      status: "Upcoming",
     })),
   }));
 
@@ -347,5 +451,114 @@ export const getDoctorAppointments = async (pageNumber = 1, type) => {
     total: data.totalCount,
   };
 };
+
+export const getUnrevisedXrays = async (pageNumber = 1) => {
+  const res = await api.get("/api/Xrays/unrevised", {
+    params: {
+      pageNumber,
+      pageSize: 9,
+    },
+  });
+
+  return {
+    ...res.data,
+    items: res.data.items.map((item) => ({
+      ...item,
+      imageUrl: getImageUrl(item.imageUrl),
+      date: formatDate(item.createdAt, "long"),
+      ...getDayAndMonth(item.createdAt),
+      aI_Confidence: Math.round(item.aI_Confidence),
+    })),
+  };
+};
+
+export const getUnrevisedXrayDetails = async (xrayId) => {
+  const res = await api.get(`/api/Xrays/unrevised/${xrayId}`);
+  const data = res.data;
+  return {
+    ...data,
+    imageUrl: getImageUrl(data.imageUrl),
+    date: formatDate(data.createdAt, "long"),
+    ...getDayAndMonth(data.createdAt),
+    aI_Confidence: Math.round(data.aI_Confidence),
+  };
+};
+
+export const getDoctorReviwedXraysHistory = async (pageNumber = 1) => {
+  const res = await api.get("/api/Xrays/my-work", {
+    params: {
+      pageNumber,
+      pageSize: 9,
+    },
+  });
+
+  return {
+    ...res.data,
+    items: res.data.items.map((item) => ({
+      ...item,
+      imageUrl: getImageUrl(item.imageUrl),
+      date: formatDate(item.confirmedAt, "long"),
+      ...getDayAndMonth(item.confirmedAt),
+      aI_Confidence: Math.round(item.aI_Confidence),
+    })),
+  };
+};
+
+export const getDoctorReviwedXrayDetails = async (xrayId) => {
+  const res = await api.get(`/api/Xrays/my-work/${xrayId}`);
+  const data = res.data;
+
+  return {
+    ...data,
+    imageUrl: getImageUrl(data.imageUrl),
+    date: formatDate(data.confirmedAt, "long"),
+    ...getDayAndMonth(data.confirmedAt),
+    aI_Confidence: Math.round(data.aI_Confidence),
+  };
+};
+
+export const confirmXrayAnalysis = async (
+  xrayId,
+  finalDiagnosis,
+  doctorNotes,
+) => {
+  const res = await api.post(`/api/Xrays/${xrayId}/confirm`, {
+    finalDiagnosis,
+    doctorNotes,
+  });
+
+  return res.data;
+};
+
+// Admin API calls
+
+export const getAdminStats = async () => {
+  const res = await api.get("/api/Admin/dashboard");
+  return res.data;
+};
+
+export const getAllDoctors = async (searchValue = "") => {
+  const res = await api.get("/api/doctors/", {
+    params: {
+      pageNumber: 1,
+      pageSize: 100000,
+      searchValue,
+    },
+  });
+
+  const data = res.data;
+
+  return data.items.map((doctor) => ({
+    ...doctor,
+    imageUrl: getImageUrl(doctor.imageUrl),
+  }));
+};
+
+export const addNewDoctor = async (data) => api.post("/api/Doctors", data);
+
+export const editDoctor = async (id, data) =>
+  api.put(`/api/Doctors/${id}`, data);
+
+export const deleteDoctor = async (id) => api.delete(`/api/Doctors/${id}`);
 
 export default api;

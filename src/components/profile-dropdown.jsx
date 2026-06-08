@@ -65,7 +65,7 @@ export default function ProfileDropdown({ user }) {
       onOpenChange={setIsOpen}
     >
       <div className="profile-dropdown-trigger">
-        <Avatar className="avatar">
+        <Avatar size={30} className="avatar">
           {user?.firstName.charAt(0).toUpperCase()}
         </Avatar>
         <span className={`profile-dropdown-arrow ${isOpen ? "open" : ""}`}>

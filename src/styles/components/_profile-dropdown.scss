@@ -20,9 +20,7 @@
   }
 
   .avatar {
-    height: 30px;
-    width: 30px;
-    background-color: rgb(var(--primary));
+    font-size: 14px !important;
     font-weight: 500;
   }
 
@@ -71,10 +69,6 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem 0;
-
-    .avatar {
-      background-color: rgb(var(--primary));
-    }
 
     .info {
       .name {

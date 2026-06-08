@@ -6,7 +6,7 @@ import {
   getDoctorSchedule,
   createBooking,
   getPatientBookings,
-} from "../services/api";
+} from "../../services/api";
 
 export default function BookAppointmentModal({
   isModalOpen,

@@ -15,8 +15,8 @@ export default function LoginPage() {
       setServerError(null);
 
       const res = await loginUser(values);
-      const token = res.data.token;
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("refreshToken", res.data.refreshToken);
 
       const role = getUserRole();
       if (!role) {
@@ -43,7 +43,7 @@ export default function LoginPage() {
           <MedicineBoxOutlined />
         </div>
         <h1>MediScan</h1>
-        <p>AI-Powered Lung X-ray Analysis</p>
+        <p>AI-Assisted Lung X-ray Analysis</p>
       </div>
       <div className="form-container">
         <div className="form-header">

@@ -13,7 +13,7 @@ export default function StatCard({ card }) {
       <div className="stat-card-content">
         <div className="label">{card.label}</div>
         <div className="value" style={{ color: card.color }}>
-          {card.value}
+          {card.subLabel || card.value}
         </div>
         <div className="description">{card.description}</div>
       </div>

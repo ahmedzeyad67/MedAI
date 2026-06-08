@@ -1,4 +1,3 @@
-@use "../abstracts/theme-variables" as *;
 @use "../components/buttons" as buttons;
 
 .patient-dashboard {
@@ -17,6 +16,11 @@
       border-radius: 0.5rem;
       background: rgb(var(--primary) / 0.12);
       color: rgb(var(--primary));
+
+      svg {
+        width: 22px;
+        height: 22px;
+      }
     }
 
     .next-appointment-content {
@@ -52,6 +56,7 @@
       font-size: 0.85rem;
       font-weight: 600;
       color: rgb(148, 163, 184);
+      flex-shrink: 0;
       transition: all 0.3s ease;
 
       .link-arrow {
@@ -185,6 +190,15 @@
           position: relative;
         }
 
+        .ant-image {
+          width: 100%;
+          height: 100%;
+        }
+
+        .ant-image-cover {
+          border-radius: 0.8rem;
+        }
+
         img {
           width: 100%;
           height: 100%;
@@ -196,12 +210,8 @@
           position: absolute;
           top: 1rem;
           right: 1rem;
-          @include buttons.outlined-btn(
-            rgb(var(--error)),
-            $bgColor: rgb(var(--error) / 0.35),
-            $hoverOpacity: 0.45,
-            $activeOpacity: 0.6
-          );
+          padding: 0.5rem !important;
+          @include buttons.btn(rgb(var(--error)));
         }
       }
     }
@@ -209,25 +219,8 @@
     .preview-action-buttons {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 0.5rem;
-
-      .analyze-btn {
-        @include buttons.outlined-btn(
-          rgb(var(--success)),
-          $bgColor: rgb(var(--success) / 0.35),
-          $hoverOpacity: 0.45,
-          $activeOpacity: 0.6
-        );
-      }
-
-      .edit-btn {
-        @include buttons.outlined-btn(
-          rgb(var(--primary)),
-          $bgColor: rgb(var(--primary) / 0.35),
-          $hoverOpacity: 0.45,
-          $activeOpacity: 0.6
-        );
-      }
     }
   }
 
@@ -236,6 +229,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 0.5rem;
       margin-bottom: 1rem;
 
@@ -244,6 +238,7 @@
           color: rgb(var(--primary-text));
           font-weight: 700;
           font-size: 1.25rem;
+          margin-bottom: 0.2rem;
         }
 
         .subtitle {
@@ -254,6 +249,110 @@
     }
 
     .recent-analysis-content {
+      .xray-analysis-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid transparent;
+        transition: all ease 0.3s;
+        cursor: pointer;
+
+        &:hover {
+          border-color: rgb(var(--primary));
+          transform: translateX(2px);
+
+          .review-btn {
+            color: rgb(var(--primary));
+          }
+        }
+
+        &.disabled {
+          cursor: auto !important;
+          opacity: 0.6;
+
+          &:hover {
+            transform: none !important;
+            border-color: rgb(var(--border-color)) !important;
+          }
+
+          .review-btn {
+            color: rgb(var(--secondary-text)) !important;
+          }
+        }
+
+        .img-container {
+          width: 5rem;
+          height: 5rem;
+          flex-shrink: 0;
+
+          img {
+            border-radius: 1rem;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .details-container {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: -webkit-fill-available;
+
+          .name {
+            color: rgb(var(--primary-text));
+            font-size: 1.125rem;
+            text-transform: capitalize;
+          }
+
+          .date {
+            color: rgb(var(--secondary-text));
+            font-size: 0.9rem;
+          }
+
+          .diagnosis {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0.4rem;
+            color: rgb(var(--primary-text));
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 1rem;
+
+            svg {
+              width: 18px;
+              height: 18px;
+            }
+          }
+        }
+
+        .badge {
+          font-size: 0.8rem;
+          font-weight: 600;
+          border: 1px solid;
+          border-radius: 1rem;
+          padding: 0.3rem 0.65rem;
+
+          &.completed {
+            background-color: rgba(0, 128, 0, 0.16);
+            color: rgb(var(--success));
+          }
+
+          &.pending {
+            background-color: rgba(217, 119, 6, 0.24);
+            color: rgb(var(--pending));
+          }
+        }
+
+        .review-btn {
+          color: rgb(var(--secondary-text));
+          transition: color ease 0.3s;
+        }
+      }
+
       .no-recents {
         color: rgb(185 185 185);
         font-weight: 700;
@@ -280,9 +379,6 @@
             gap: 0.2rem;
           }
         }
-      }
-      .view-all-link {
-        display: flex;
       }
     }
   }

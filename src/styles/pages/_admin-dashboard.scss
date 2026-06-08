@@ -1,0 +1,317 @@
+@use "../components/buttons" as buttons;
+
+.admin-dashboard {
+  .admin-stat-card {
+    flex: 1 300px;
+    padding: 1.5rem;
+    border: 1px solid rgb(var(--border-color) / 0.8);
+    border-radius: 1.5rem;
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+
+      .label {
+        color: rgb(var(--secondary-text));
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+    }
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  .stats-breakdown-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .breakdown-card {
+      flex: 1 28rem;
+      padding: 1.5rem;
+      border: 1px solid rgb(var(--border-color) / 0.8);
+      border-radius: 1.5rem;
+
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .title {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        color: rgb(var(--primary-text));
+        font-weight: 500;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+
+        .breakdown-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 0.75rem;
+
+          .label {
+            color: rgb(var(--secondary-text));
+            font-size: 0.85rem;
+            text-transform: capitalize;
+          }
+
+          .value {
+            margin-left: auto;
+            color: rgb(var(--primary-text));
+          }
+        }
+      }
+
+      @media (max-width: 500px) {
+        .content {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+
+  .doctors-table-container {
+    border: 1px solid rgb(var(--border-color) / 0.8);
+    border-radius: 1.5rem;
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 1.5rem;
+      border-bottom: 1px solid rgb(var(--border-color) / 0.8);
+
+      .text {
+        h2 {
+          color: rgb(var(--primary-text));
+          font-size: 1.4rem;
+          margin-bottom: 0.2rem;
+        }
+
+        p {
+          color: rgb(var(--secondary-text));
+          font-size: 0.85rem;
+        }
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        .search-bar {
+          width: 16rem;
+          padding: 0 0.5rem;
+
+          svg {
+            color: rgb(180, 180, 180);
+          }
+        }
+
+        @media (max-width: 512px) {
+          width: -webkit-fill-available;
+          gap: 1rem;
+
+          .search-bar {
+            width: 100%;
+          }
+
+          button {
+            margin-left: auto;
+          }
+        }
+
+        button {
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .doctors-table {
+      tr > :first-child {
+        padding-left: 1.5rem;
+      }
+
+      th {
+        color: rgb(var(--secondary-text));
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .doctor-cell {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .name {
+          color: rgb(var(--primary-text));
+          font-size: 1rem;
+          font-weight: 500;
+          text-transform: capitalize;
+        }
+
+        .email {
+          color: rgb(var(--secondary-text));
+          font-size: 0.75rem;
+        }
+
+        .avatar {
+          background: var(--navbar-bg);
+          font-size: 1rem !important;
+        }
+      }
+
+      .ant-table-cell-ellipsis {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .actions-cell {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+
+        button {
+          padding: 0.5rem !important;
+        }
+
+        .edit-btn {
+          @include buttons.text-btn(rgb(var(--primary)), rgb(var(--primary)));
+        }
+
+        .delete-btn {
+          @include buttons.text-btn(rgb(var(--error)), rgb(var(--error)));
+        }
+      }
+
+      @media (max-width: 850px) {
+        zoom: 0.8;
+      }
+
+      @media (max-width: 620px) {
+        zoom: 0.7;
+      }
+
+      @media (max-width: 350px) {
+        zoom: 0.6;
+      }
+    }
+  }
+}
+
+.add-new-doctor-modal,
+.edit-doctor-modal,
+.delete-doctor-modal {
+  .ant-modal-header {
+    margin-bottom: 0;
+  }
+
+  .ant-modal-title {
+    color: rgb(var(--primary-text));
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+
+  .description {
+    color: rgb(var(--secondary-text));
+  }
+
+  form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1rem;
+    padding: 1.5rem 1rem 0rem;
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .ant-form-item-label {
+      margin-bottom: 0.2rem !important;
+
+      .ant-form-item-required {
+        color: rgb(var(--primary-text)) !important;
+        height: unset !important;
+        font-weight: 500 !important;
+
+        &::before {
+          content: unset !important;
+        }
+      }
+    }
+
+    .ant-input {
+      border: 1px solid rgb(var(--border-color)) !important;
+      color: rgb(var(--primary-text)) !important;
+
+      &::placeholder {
+        color: rgb(var(--secondary-text));
+        font-size: 0.9rem;
+      }
+
+      &:-webkit-autofill {
+        -webkit-text-fill-color: rgb(var(--primary-text)) !important;
+        transition: background-color 5000s ease-in-out 0s;
+        caret-color: rgb(var(--primary-text));
+      }
+
+      &:focus {
+        border-color: rgb(var(--primary)) !important;
+      }
+    }
+
+    .ant-input-disabled {
+      background-color: rgba(71, 85, 105, 0.3) !important;
+      color: rgb(var(--secondary-text)) !important;
+    }
+
+    .ant-input-affix-wrapper {
+      border: 1px solid rgb(var(--border-color)) !important;
+
+      &:focus-within {
+        border-color: rgb(var(--primary)) !important;
+      }
+
+      .ant-input {
+        border: none !important;
+        background: transparent !important;
+      }
+    }
+
+    .ant-alert-error {
+      color: rgb(var(--primary-text)) !important;
+      background: rgba(255, 77, 80, 0.3) !important;
+      border: 1px solid rgb(255, 77, 79) !important;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .delete-btn {
+    @include buttons.btn(rgb(var(--error)));
+  }
+}

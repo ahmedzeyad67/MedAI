@@ -11,8 +11,8 @@ import PendingIcon from "@/assets/icons/pending.svg?react";
 import ApprovedIcon from "@/assets/icons/approved.svg?react";
 import SlotsIcon from "@/assets/icons/slots.svg?react";
 import { PlusOutlined } from "@ant-design/icons";
-import AddTimeSlotModal from "../../components/add-time-slot-modal";
-import AvailableSlotCard from "../../components/available-slot-card";
+import AddTimeSlotModal from "../../components/doctor-dashboard-components/add-time-slot-modal";
+import AvailableSlotCard from "../../components/doctor-dashboard-components/available-slot-card";
 
 export default function AvailabilityPage() {
   const { user } = useAuth();
@@ -176,7 +176,11 @@ export default function AvailabilityPage() {
           <>
             <div className="page-summary">{summaryCardsList}</div>
             <div className="available-slots-container">
-              {availableSlotsList}
+              {availableSlots.length > 0 ? (
+                availableSlotsList
+              ) : (
+                <p className="no-data">No time slots available.</p>
+              )}
             </div>
           </>
         )}

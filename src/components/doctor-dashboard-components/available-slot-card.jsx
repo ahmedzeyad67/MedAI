@@ -55,7 +55,6 @@ export default function AvailableSlotCard({ slot, handlers }) {
       </div>
       <div className="progress">
         <Progress
-          className="progress-bar"
           percent={(slot.bookedCount / slot.capacity) * 100 || 0}
           showInfo={false}
           railColor="#0000001f"
