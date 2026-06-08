@@ -7,12 +7,14 @@ import { Alert, Form, Input } from "antd";
 
 export default function LoginPage() {
   const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState(null);
   const navigate = useNavigate();
 
   const onFinish = async (values) => {
     try {
       setServerError(null);
+      setIsSubmitting(true);
 
       const res = await loginUser(values);
       localStorage.setItem("token", res.data.token);
@@ -33,6 +35,8 @@ export default function LoginPage() {
       } else {
         setServerError("Something went wrong. Please try again.");
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -97,7 +101,9 @@ export default function LoginPage() {
           {serverError && <Alert title={serverError} type="error" showIcon />}
 
           <Form.Item>
-            <button type="btn">Login</button>
+            <button type="btn" disabled={isSubmitting}>
+              Login
+            </button>
           </Form.Item>
         </Form>
         <div className="form-footer">

@@ -86,6 +86,12 @@
       );
       box-shadow: 0 8px 32px rgba(0, 217, 255, 0.3);
       width: -webkit-fill-available;
+
+      &:disabled {
+        @include buttons.disabled-btn(
+          linear-gradient(135deg, rgb(0, 217, 255), rgb(0 102 204))
+        );
+      }
     }
   }
 

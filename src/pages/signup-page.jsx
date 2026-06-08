@@ -7,6 +7,7 @@ import { Alert, Form, Input } from "antd";
 
 export default function SignupPage() {
   const [form] = Form.useForm();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState(null);
   const navigate = useNavigate();
 
@@ -16,6 +17,7 @@ export default function SignupPage() {
 
     try {
       setServerError(null);
+      setIsSubmitting(true);
 
       const res = await registerUser(payload);
       localStorage.setItem("token", res.data.token);
@@ -40,6 +42,8 @@ export default function SignupPage() {
       } else {
         setServerError("Signup failed. Please try again.");
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -171,7 +175,9 @@ export default function SignupPage() {
           {serverError && <Alert title={serverError} type="error" showIcon />}
 
           <Form.Item>
-            <button type="btn">Create Account</button>
+            <button type="btn" disabled={isSubmitting}>
+              Create Account
+            </button>
           </Form.Item>
         </Form>
         <div className="form-footer">
