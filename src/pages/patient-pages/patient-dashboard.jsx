@@ -53,6 +53,9 @@ export default function PatientDashboard() {
 
   const handleXrayUpload = async () => {
     if (!imgFile) return;
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.toLocaleString("en-US", { month: "short" });
 
     try {
       setIsUploading(true);
@@ -65,6 +68,23 @@ export default function PatientDashboard() {
         placement: "bottomLeft",
         duration: 3,
       });
+
+      setStatsValues((prev) => ({
+        ...prev,
+        totalAnalyses: prev.totalAnalyses + 1,
+        pendingAnalysis: prev.pendingAnalysis + 1,
+      }));
+      setRecentAnalysis((prev) => [
+        {
+          id: Date.now(),
+          creationDateInfo: {
+            day: day,
+            month: month,
+          },
+          isRevised: false,
+        },
+        ...prev.slice(0, 2),
+      ]);
 
       removeSelectedImage();
     } catch (err) {
