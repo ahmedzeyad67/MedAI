@@ -1,9 +1,6 @@
 import { useState } from "react";
-import {
-  CloseOutlined,
-  MedicineBoxOutlined,
-  MenuOutlined,
-} from "@ant-design/icons";
+import { CloseOutlined, MenuOutlined } from "@ant-design/icons";
+import LogoIcon from "@/assets/icons/logo.svg?react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { navLinksByRole } from "../config/navConfig";
 import ProfileDropdown from "./profile-dropdown";
@@ -35,10 +32,10 @@ export default function Navbar({ user, role }) {
     >
       <div className="navbar-container">
         <div className="navbar-logo" onClick={handleLogoClick}>
-          <div className="icon">
-            <MedicineBoxOutlined />
+          <div className="icon logo-icon">
+            <LogoIcon />
           </div>
-          <p className="text">MediScan</p>
+          <p className="text">MedAI</p>
           {role && role !== "patient" && (
             <span className="role-badge">{role}</span>
           )}

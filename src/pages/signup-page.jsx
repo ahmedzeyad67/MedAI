@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/getUserRole";
 import { registerUser } from "../services/api";
-import { MedicineBoxOutlined } from "@ant-design/icons";
+import LogoIcon from "@/assets/icons/logo.svg?react";
 import { Alert, Form, Input } from "antd";
 
 export default function SignupPage() {
@@ -50,10 +50,10 @@ export default function SignupPage() {
   return (
     <div className="signup-page-container">
       <div className="header">
-        <div className="icon">
-          <MedicineBoxOutlined />
+        <div className="icon logo-icon">
+          <LogoIcon />
         </div>
-        <h1>MediScan</h1>
+        <h1>MedAI</h1>
         <p>Create your account</p>
       </div>
       <div className="form-container">

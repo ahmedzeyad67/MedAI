@@ -12,7 +12,7 @@ export default function GetStarted() {
             <h1 className="title">Ready to Get Started?</h1>
             <p className="description">
               Join thousands of patients and healthcare professionals using
-              MediScan for accurate lung X-ray analysis
+              MedAI for accurate lung X-ray analysis
             </p>
           </div>
           <div className="actions">

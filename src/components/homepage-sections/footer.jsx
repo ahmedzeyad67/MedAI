@@ -1,4 +1,4 @@
-import { MedicineBoxOutlined } from "@ant-design/icons";
+import LogoIcon from "@/assets/icons/logo.svg?react";
 
 export default function Footer() {
   const features = [
@@ -28,17 +28,17 @@ export default function Footer() {
           <div className="grid">
             <div>
               <div className="footer-logo">
-                <div className="icon">
-                  <MedicineBoxOutlined />
+                <div className="icon logo-icon">
+                  <LogoIcon />
                 </div>
-                <p className="text">MediScan</p>
+                <p className="text">MedAI</p>
               </div>
               <p>AI-powered lung X-ray analysis for clinical diagnosis</p>
             </div>
             {featuresLists}
           </div>
           <div className="credits">
-            <p>© 2025 MediScan. All rights reserved.</p>
+            <p>© 2025 MedAI. All rights reserved.</p>
             <p>Clinical-grade AI analysis for healthcare professionals</p>
           </div>
         </div>

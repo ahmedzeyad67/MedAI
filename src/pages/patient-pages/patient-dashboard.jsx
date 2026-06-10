@@ -139,7 +139,7 @@ export default function PatientDashboard() {
           <div className="dashboard-content container">
             <PrivateHero
               greeting="Good Morning"
-              title="Welcome to MediScan"
+              title="Welcome to MedAI"
               subtitle="Upload your X-rays for AI-assisted analysis and expert doctor review"
               banner={bannerSvg}
             />

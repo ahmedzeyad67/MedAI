@@ -44,7 +44,7 @@ export default function Features() {
       <div className="container">
         <div className="content">
           <div className="header">
-            <h1 className="title">Why Choose MediScan?</h1>
+            <h1 className="title">Why Choose MedAI?</h1>
             <p className="description">
               Combining elite AI technology with expert medical professionals
               for reliable diagnosis

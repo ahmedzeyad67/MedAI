@@ -25,6 +25,13 @@ button {
   color: rgb(var(--primary)) !important;
 }
 
+.logo-icon {
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+
 .search-bar {
   padding: 0.5rem;
   border-radius: 0.5rem;
