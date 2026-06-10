@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/getUserRole";
 import { registerUser } from "../services/api";
 import LogoIcon from "@/assets/icons/logo.svg?react";
@@ -182,7 +182,10 @@ export default function SignupPage() {
         </Form>
         <div className="form-footer">
           <p>
-            Already have an account? <a href="/login">Sign in</a>
+            Already have an account?{" "}
+            <Link to="/login" className="form-link">
+              Sign in
+            </Link>
           </p>
         </div>
       </div>

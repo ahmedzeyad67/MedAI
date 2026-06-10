@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUserRole } from "../services/auth/getUserRole";
 import { loginUser } from "../services/api";
 import LogoIcon from "@/assets/icons/logo.svg?react";
@@ -108,7 +108,10 @@ export default function LoginPage() {
         </Form>
         <div className="form-footer">
           <p>
-            Don't have an account? <a href="/signup">Sign up</a>
+            Don't have an account?{" "}
+            <Link to="/signup" className="form-link">
+              Sign up
+            </Link>
           </p>
         </div>
       </div>
