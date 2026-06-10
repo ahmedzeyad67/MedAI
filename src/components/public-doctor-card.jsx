@@ -16,6 +16,9 @@ export default function PublicDoctorCard({ doctor }) {
           src={doctor.imageUrl || noImg}
           alt="doctor's img"
           draggable="false"
+          onError={(e) => {
+            e.currentTarget.src = noImg;
+          }}
         />
       </div>
       <h3 className="name">
